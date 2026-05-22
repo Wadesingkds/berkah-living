@@ -153,7 +153,7 @@ Silakan cek dashboard untuk detail lengkap.`;
     );
   } catch (error) {
     return NextResponse.json(
-      { error: (error as Error).message },
+      { error: error.message },
       { status: 500 }
     );
   }
