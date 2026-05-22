@@ -36,15 +36,26 @@ export default function CheckoutPage() {
 
   if (submitted) {
     return (
-      <div className="min-h-full flex flex-col items-center justify-center p-4 text-center">
-        <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mb-4">
-          <QrCode size={32} className="text-green-600" />
-        </div>
-        <p className="text-lg font-bold mb-1">Order berhasil dibuat!</p>
-        <p className="text-sm text-muted-foreground mb-2">No. Order: ORD-20260522-0005</p>
-        <p className="text-sm text-muted-foreground mb-4">
-          {payment === "QRIS" ? "Scan QRIS untuk bayar" : payment === "TRANSFER" ? "Transfer ke rekening BNI" : "Bayar saat barang sampai"}
-        </p>
+      <div className="min-h-full flex flex-col items-center justify-center p-4 text-center pb-24">
+        {payment === "QRIS" && qrCode ? (
+          <>
+            <div className="mb-4">
+              <img src={qrCode} alt="QRIS QR Code" className="w-64 h-64 rounded-lg" />
+            </div>
+            <p className="text-lg font-bold mb-1">Scan QRIS untuk bayar</p>
+            <p className="text-sm text-muted-foreground mb-4">Rp {getTotal().toLocaleString("id-ID")}</p>
+          </>
+        ) : (
+          <>
+            <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mb-4">
+              <QrCode size={32} className="text-green-600" />
+            </div>
+            <p className="text-lg font-bold mb-1">Order berhasil dibuat!</p>
+            <p className="text-sm text-muted-foreground mb-4">
+              {payment === "TRANSFER" ? "Transfer ke rekening BNI 884343871" : "Bayar saat barang sampai"}
+            </p>
+          </>
+        )}
         <Link href="/buyer/catalog">
           <Button>Kembali ke Katalog</Button>
         </Link>
@@ -52,10 +63,62 @@ export default function CheckoutPage() {
     );
   }
 
-  const handleSubmit = () => {
-    // TODO: call API to create order + Pakasir QRIS
-    clearCart();
-    setSubmitted(true);
+  const [loading, setLoading] = useState(false);
+  const [qrCode, setQrCode] = useState<string | null>(null);
+  const [transactionId, setTransactionId] = useState<string | null>(null);
+
+  const handleSubmit = async () => {
+    if (!name || !phone) {
+      alert('Nama dan nomor WhatsApp harus diisi');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      // Create order in Supabase
+      const orderResponse = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          order_number: `ORD-${Date.now()}`,
+          customer_id: null, // TODO: get from auth
+          total: getTotal(),
+          status: 'PENDING',
+          payment_type: payment,
+          source: 'CATALOG',
+          notes: notes,
+        }),
+      });
+
+      const order = await orderResponse.json();
+
+      if (payment === 'QRIS') {
+        // Create QRIS payment
+        const qrisResponse = await fetch('/api/payment/qris', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            orderId: order.id,
+            amount: getTotal(),
+            customerName: name,
+            customerPhone: phone,
+          }),
+        });
+
+        const qrisData = await qrisResponse.json();
+        if (qrisData.success) {
+          setQrCode(qrisData.qrCodeUrl);
+          setTransactionId(qrisData.transactionId);
+        }
+      }
+
+      clearCart();
+      setSubmitted(true);
+    } catch (error) {
+      alert('Error: ' + (error as Error).message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
