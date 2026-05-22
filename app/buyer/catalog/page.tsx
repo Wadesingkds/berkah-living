@@ -25,7 +25,7 @@ export default function CatalogPage() {
   const { items, addItem, updateQty } = useCartStore();
   const totalItems = items.reduce((sum, i) => sum + i.qty, 0);
 
-  const filtered = mockProducts.filter((p) => {
+  const filtered = mockProducts.filter(() => {
     if (activeCategory !== "Semua") return true; // TODO: filter by category_id
     return true;
   });
