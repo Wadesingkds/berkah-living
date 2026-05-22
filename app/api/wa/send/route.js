@@ -53,11 +53,11 @@ Silakan selesaikan pembayaran untuk memproses pesanan Anda.
 
 Terima kasih! 🙏`;
     } else if (action === 'status_update') {
-      const statusMessages: Record<string, string> = {
-        PAID: '✅ Pembayaran diterima! Pesanan Anda sedang dipersiapkan.',
-        DELIVERED: '🚚 Pesanan Anda sedang dalam perjalanan.',
-        DONE: '📦 Pesanan Anda telah diterima. Terima kasih!',
-        CANCELLED: '❌ Pesanan Anda telah dibatalkan.',
+      const statusMessages = {
+        PAID: 'Pembayaran diterima! Pesanan Anda sedang dipersiapkan.',
+        DELIVERED: 'Pesanan Anda sedang dalam perjalanan.',
+        DONE: 'Pesanan Anda telah diterima. Terima kasih!',
+        CANCELLED: 'Pesanan Anda telah dibatalkan.',
       };
       
       finalMessage = `Halo ${customerName}! 📬
