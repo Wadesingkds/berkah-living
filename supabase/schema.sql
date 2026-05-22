@@ -1,105 +1,104 @@
--- Berkah Living Supabase Schema
--- Run this in Supabase SQL Editor
-
--- Enable UUID extension
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
 -- Categories
-CREATE TABLE IF NOT EXISTS categories (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  name TEXT NOT NULL UNIQUE
-);
-
--- Customers
-CREATE TABLE IF NOT EXISTS customers (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  name TEXT NOT NULL,
-  phone TEXT NOT NULL UNIQUE,
-  is_vip BOOLEAN NOT NULL DEFAULT FALSE,
-  total_orders INTEGER NOT NULL DEFAULT 0,
-  total_spend NUMERIC(12,2) NOT NULL DEFAULT 0,
-  last_order_at TIMESTAMPTZ,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+CREATE TABLE categories (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL UNIQUE,
+  created_at TIMESTAMP DEFAULT now()
 );
 
 -- Products
-CREATE TABLE IF NOT EXISTS products (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+CREATE TABLE products (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
-  price NUMERIC(12,2) NOT NULL,
-  stock INTEGER NOT NULL DEFAULT 0,
-  min_stock INTEGER NOT NULL DEFAULT 0,
-  category_id UUID REFERENCES categories(id) ON DELETE SET NULL,
+  price INTEGER NOT NULL,
+  stock INTEGER DEFAULT 0,
+  min_stock INTEGER DEFAULT 5,
+  category_id UUID REFERENCES categories(id),
   image_url TEXT,
-  is_active BOOLEAN NOT NULL DEFAULT TRUE,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP DEFAULT now(),
+  updated_at TIMESTAMP DEFAULT now()
 );
 
--- Drivers
-CREATE TABLE IF NOT EXISTS drivers (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+-- Customers
+CREATE TABLE customers (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
-  phone TEXT NOT NULL
+  phone TEXT UNIQUE NOT NULL,
+  is_vip BOOLEAN DEFAULT false,
+  total_orders INTEGER DEFAULT 0,
+  total_spend INTEGER DEFAULT 0,
+  last_order_at TIMESTAMP,
+  created_at TIMESTAMP DEFAULT now()
 );
 
 -- Orders
-CREATE TABLE IF NOT EXISTS orders (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  order_number TEXT NOT NULL UNIQUE,
-  customer_id UUID NOT NULL REFERENCES customers(id) ON DELETE RESTRICT,
-  total NUMERIC(12,2) NOT NULL,
-  status TEXT NOT NULL DEFAULT 'PENDING' CHECK (status IN ('PENDING','PAID','DELIVERED','DONE','CANCELLED')),
-  payment_type TEXT NOT NULL CHECK (payment_type IN ('QRIS','TRANSFER','COD')),
-  source TEXT NOT NULL CHECK (source IN ('CHAT','CATALOG','MANUAL')),
-  driver_id UUID REFERENCES drivers(id) ON DELETE SET NULL,
+CREATE TABLE orders (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  order_number TEXT UNIQUE NOT NULL,
+  customer_id UUID REFERENCES customers(id),
+  total INTEGER NOT NULL,
+  status TEXT DEFAULT 'PENDING',
+  payment_type TEXT DEFAULT 'TRANSFER',
+  source TEXT DEFAULT 'CHAT',
+  driver_id UUID,
   notes TEXT,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  created_at TIMESTAMP DEFAULT now(),
+  updated_at TIMESTAMP DEFAULT now()
 );
 
 -- Order Items
-CREATE TABLE IF NOT EXISTS order_items (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  order_id UUID NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
-  product_id UUID NOT NULL REFERENCES products(id) ON DELETE RESTRICT,
-  qty INTEGER NOT NULL CHECK (qty > 0),
-  price NUMERIC(12,2) NOT NULL
+CREATE TABLE order_items (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  order_id UUID REFERENCES orders(id) ON DELETE CASCADE,
+  product_id UUID REFERENCES products(id),
+  qty INTEGER NOT NULL,
+  price INTEGER NOT NULL,
+  created_at TIMESTAMP DEFAULT now()
 );
 
--- Indexes
-CREATE INDEX IF NOT EXISTS idx_products_category ON products(category_id);
-CREATE INDEX IF NOT EXISTS idx_orders_customer ON orders(customer_id);
-CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);
-CREATE INDEX IF NOT EXISTS idx_order_items_order ON order_items(order_id);
-CREATE INDEX IF NOT EXISTS idx_order_items_product ON order_items(product_id);
+-- Drivers
+CREATE TABLE drivers (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL,
+  phone TEXT UNIQUE NOT NULL,
+  created_at TIMESTAMP DEFAULT now()
+);
 
--- RLS Policies
+-- AI Insights
+CREATE TABLE ai_insights (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  content TEXT NOT NULL,
+  is_read BOOLEAN DEFAULT false,
+  created_at TIMESTAMP DEFAULT now()
+);
+
+-- Enable RLS
 ALTER TABLE categories ENABLE ROW LEVEL SECURITY;
-ALTER TABLE customers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE products ENABLE ROW LEVEL SECURITY;
-ALTER TABLE drivers ENABLE ROW LEVEL SECURITY;
+ALTER TABLE customers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE order_items ENABLE ROW LEVEL SECURITY;
+ALTER TABLE drivers ENABLE ROW LEVEL SECURITY;
+ALTER TABLE ai_insights ENABLE ROW LEVEL SECURITY;
 
--- Categories: authenticated users can read, write
-CREATE POLICY "categories_all_authenticated" ON categories
-  FOR ALL TO authenticated USING (true) WITH CHECK (true);
+-- RLS Policies (allow all for now - add auth later)
+CREATE POLICY "Allow all" ON categories FOR ALL USING (true);
+CREATE POLICY "Allow all" ON products FOR ALL USING (true);
+CREATE POLICY "Allow all" ON customers FOR ALL USING (true);
+CREATE POLICY "Allow all" ON orders FOR ALL USING (true);
+CREATE POLICY "Allow all" ON order_items FOR ALL USING (true);
+CREATE POLICY "Allow all" ON drivers FOR ALL USING (true);
+CREATE POLICY "Allow all" ON ai_insights FOR ALL USING (true);
 
--- Customers: authenticated users can read, write
-CREATE POLICY "customers_all_authenticated" ON customers
-  FOR ALL TO authenticated USING (true) WITH CHECK (true);
+-- Insert sample categories
+INSERT INTO categories (name) VALUES
+  ('Ayam Organik'),
+  ('Daging Segar'),
+  ('Produk Olahan'),
+  ('Bumbu & Rempah');
 
--- Products: authenticated users can read, write
-CREATE POLICY "products_all_authenticated" ON products
-  FOR ALL TO authenticated USING (true) WITH CHECK (true);
-
--- Drivers: authenticated users can read, write
-CREATE POLICY "drivers_all_authenticated" ON drivers
-  FOR ALL TO authenticated USING (true) WITH CHECK (true);
-
--- Orders: authenticated users can read, write
-CREATE POLICY "orders_all_authenticated" ON orders
-  FOR ALL TO authenticated USING (true) WITH CHECK (true);
-
--- Order Items: authenticated users can read, write
-CREATE POLICY "order_items_all_authenticated" ON order_items
-  FOR ALL TO authenticated USING (true) WITH CHECK (true);
+-- Insert sample products
+INSERT INTO products (name, price, stock, category_id, is_active) VALUES
+  ('Ayam Organik 1kg', 85000, 20, (SELECT id FROM categories WHERE name = 'Ayam Organik'), true),
+  ('Daging Sapi Premium 500g', 120000, 15, (SELECT id FROM categories WHERE name = 'Daging Segar'), true),
+  ('Sosis Homemade 250g', 45000, 30, (SELECT id FROM categories WHERE name = 'Produk Olahan'), true);
