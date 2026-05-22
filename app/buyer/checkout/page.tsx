@@ -22,6 +22,9 @@ export default function CheckoutPage() {
   const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [qrCode, setQrCode] = useState<string | null>(null);
+  const [transactionId, setTransactionId] = useState<string | null>(null);
 
   if (items.length === 0 && !submitted) {
     return (
@@ -62,10 +65,6 @@ export default function CheckoutPage() {
       </div>
     );
   }
-
-  const [loading, setLoading] = useState(false);
-  const [qrCode, setQrCode] = useState<string | null>(null);
-  const [transactionId, setTransactionId] = useState<string | null>(null);
 
   const handleSubmit = async () => {
     if (!name || !phone) {
