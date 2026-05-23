@@ -1,154 +1,78 @@
-"use client";
+import { supabaseServer } from "@/lib/supabase/server";
+import { CatalogClient } from "./catalog-client";
 
-import { useState, useEffect } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { useCartStore } from "@/stores/cart";
-import { ShoppingCart, Package, Minus, Plus } from "lucide-react";
-import Link from "next/link";
-import { Product } from "@/types";
+async function getStoreSettings() {
+  try {
+    const { data, error } = await supabaseServer
+      .from("store_settings")
+      .select("*")
+      .single();
 
-const categories = ["Semua", "Ayam", "Daging", "Sayur", "Bumbu"];
+    if (error && error.code !== "PGRST116") {
+      console.error("Error fetching store settings:", error);
+      throw error;
+    }
 
-const mockProducts: Product[] = [
-  { id: "1", name: "Ayam Kampung Utuh", price: 85000, stock: 12, minStock: 10, categoryId: "cat1", imageUrl: null, isActive: true, createdAt: new Date().toISOString() },
-  { id: "2", name: "Ayam Petelur Potong", price: 45000, stock: 3, minStock: 5, categoryId: "cat1", imageUrl: null, isActive: true, createdAt: new Date().toISOString() },
-  { id: "3", name: "Daging Sapi Giling", price: 120000, stock: 8, minStock: 5, categoryId: "cat2", imageUrl: null, isActive: true, createdAt: new Date().toISOString() },
-  { id: "4", name: "Daging Kambing", price: 150000, stock: 0, minStock: 3, categoryId: "cat2", imageUrl: null, isActive: true, createdAt: new Date().toISOString() },
-  { id: "5", name: "Bayam Segar", price: 5000, stock: 20, minStock: 10, categoryId: "cat3", imageUrl: null, isActive: true, createdAt: new Date().toISOString() },
-  { id: "6", name: "Bawang Merah", price: 35000, stock: 15, minStock: 5, categoryId: "cat4", imageUrl: null, isActive: true, createdAt: new Date().toISOString() },
-];
+    if (!data) {
+      // Return default settings if no store settings found
+      return {
+        id: "default",
+        store_name: "Berkah Living",
+        store_description: "Ayam Organik & Daging Segar",
+        store_address: "Kudus, Jawa Tengah",
+        opening_hours: "06:00",
+        closing_hours: "18:00",
+        is_open: true,
+      };
+    }
 
-interface StoreSettings {
-  id: string;
-  store_name: string;
-  store_description: string;
-  store_address: string;
-  opening_hours: string;
-  closing_hours: string;
-  is_open: boolean;
+    return data;
+  } catch (error) {
+    console.error("Failed to fetch store settings:", error);
+    // Return default settings on error
+    return {
+      id: "default",
+      store_name: "Berkah Living",
+      store_description: "Ayam Organik & Daging Segar",
+      store_address: "Kudus, Jawa Tengah",
+      opening_hours: "06:00",
+      closing_hours: "18:00",
+      is_open: true,
+    };
+  }
 }
 
-export default function CatalogPage() {
-  const [activeCategory, setActiveCategory] = useState("Semua");
-  const [storeSettings, setStoreSettings] = useState<StoreSettings | null>(null);
-  const [isStoreOpen, setIsStoreOpen] = useState(false);
-  const { items, addItem, updateQty } = useCartStore();
-  const totalItems = items.reduce((sum, i) => sum + i.qty, 0);
+async function getProducts() {
+  try {
+    const { data, error } = await supabaseServer
+      .from("products")
+      .select("*")
+      .eq("is_active", true)
+      .order("created_at", { ascending: false });
 
-  // Fetch store settings and calculate if store is open
-  useEffect(() => {
-    fetch('/api/admin/settings/store')
-      .then(res => res.json())
-      .then(data => {
-        setStoreSettings(data);
-        
-        // Calculate if store is open based on current time and opening hours
-        if (data.opening_hours && data.closing_hours) {
-          const now = new Date();
-          const currentTime = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
-          
-          // Parse opening and closing times
-          const [openHour, openMinute] = data.opening_hours.split(':').map(Number);
-          const [closeHour, closeMinute] = data.closing_hours.split(':').map(Number);
-          
-          const openTime = openHour * 60 + openMinute;
-          const closeTime = closeHour * 60 + closeMinute;
-          const currentTimeInMinutes = now.getHours() * 60 + now.getMinutes();
-          
-          // Check if current time is within opening hours
-          const isWithinHours = currentTimeInMinutes >= openTime && currentTimeInMinutes <= closeTime;
-          
-          // Store is open if: manual override is_open AND within opening hours
-          setIsStoreOpen(data.is_open && isWithinHours);
-        } else {
-          // Fallback to manual is_open if no hours set
-          setIsStoreOpen(data.is_open);
-        }
-      })
-      .catch(err => console.error('Failed to fetch store settings:', err));
-  }, []);
+    if (error) {
+      console.error("Error fetching products:", error);
+      throw error;
+    }
 
-  const filtered = mockProducts.filter(() => {
-    if (activeCategory !== "Semua") return true; // TODO: filter by category_id
-    return true;
-  });
+    return data || [];
+  } catch (error) {
+    console.error("Failed to fetch products:", error);
+    return [];
+  }
+}
 
-  const getQty = (id: string) => items.find((i) => i.productId === id)?.qty || 0;
+export default async function CatalogPage() {
+  // Parallel fetch - both requests run simultaneously
+  const [storeSettings, products] = await Promise.all([
+    getStoreSettings(),
+    getProducts(),
+  ]);
 
   return (
-    <div className="min-h-full bg-background pb-20">
-      <div className="bg-primary text-white p-4">
-        <div className="flex items-center justify-between mb-2">
-          <div>
-            <h1 className="text-lg font-bold">{storeSettings?.store_name || 'Berkah Living'}</h1>
-            <p className="text-xs opacity-80">{storeSettings?.store_description || 'Ayam Organik & Daging Segar'}</p>
-          </div>
-          <Badge className={isStoreOpen ? "bg-green-400 text-green-900" : "bg-red-400 text-red-900"}>
-            {isStoreOpen ? 'Buka' : 'Tutup'}
-          </Badge>
-        </div>
-        <p className="text-xs opacity-70">Jam: {storeSettings?.opening_hours || '06:00'} - {storeSettings?.closing_hours || '18:00'} | {storeSettings?.store_address || 'Kudus, Jateng'}</p>
-      </div>
-
-      <div className="p-4 space-y-3">
-        <div className="flex gap-2 overflow-x-auto pb-1">
-          {categories.map((c) => (
-            <button
-              key={c}
-              onClick={() => setActiveCategory(c)}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap ${
-                activeCategory === c ? "bg-primary text-white" : "bg-white text-muted-foreground border"
-              }`}
-            >
-              {c}
-            </button>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-2 gap-3">
-          {filtered.map((p) => {
-            const qty = getQty(p.id);
-            return (
-              <Card key={p.id} className={`overflow-hidden ${p.stock === 0 ? "opacity-60" : ""}`}>
-                <div className="h-32 bg-muted flex items-center justify-center">
-                  <Package size={32} className="text-muted-foreground" />
-                </div>
-                <CardContent className="p-3">
-                  <p className="text-sm font-medium line-clamp-2">{p.name}</p>
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm font-bold">Rp {p.price.toLocaleString("id-ID")}</p>
-                    {p.stock === 0 ? (
-                      <Badge className="bg-red-100 text-red-700 text-[10px]">Habis</Badge>
-                    ) : qty > 0 ? (
-                      <div className="flex items-center gap-1">
-                        <Button size="icon" className="h-7 w-7" onClick={() => updateQty(p.id, qty - 1)}><Minus size={12} /></Button>
-                        <span className="text-sm font-medium w-5 text-center">{qty}</span>
-                        <Button size="icon" className="h-7 w-7" onClick={() => updateQty(p.id, qty + 1)}><Plus size={12} /></Button>
-                      </div>
-                    ) : (
-                      <Button size="sm" className="h-7 px-2" onClick={() => addItem({ productId: p.id, name: p.name, price: p.price, qty: 1, imageUrl: p.imageUrl })}>+</Button>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-      </div>
-
-      {totalItems > 0 && (
-        <Link href="/cart">
-          <div className="fixed bottom-4 left-4 right-4 bg-primary text-white rounded-xl p-3 flex items-center justify-between shadow-lg z-50">
-            <div className="flex items-center gap-2">
-              <ShoppingCart size={18} />
-              <span className="text-sm font-medium">{totalItems} item</span>
-            </div>
-            <span className="text-sm font-bold">Lihat Keranjang →</span>
-          </div>
-        </Link>
-      )}
-    </div>
+    <CatalogClient
+      storeSettings={storeSettings}
+      products={products}
+    />
   );
 }

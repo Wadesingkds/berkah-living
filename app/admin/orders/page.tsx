@@ -61,38 +61,32 @@ export default function OrdersPage() {
   const [selectedDriverId, setSelectedDriverId] = useState<string>("");
 
   useEffect(() => {
-    const fetchOrders = async () => {
+    const fetchData = async () => {
       setFetching(true);
       try {
-        const res = await fetch('/api/orders');
-        if (res.ok) {
-          const data = await res.json();
-          if (data.length > 0) {
-            setOrders(data);
+        const [ordersRes, driversRes] = await Promise.all([
+          fetch('/api/orders'),
+          fetch('/api/drivers'),
+        ]);
+
+        if (ordersRes.ok) {
+          const ordersData = await ordersRes.json();
+          if (ordersData.length > 0) {
+            setOrders(ordersData);
           }
         }
+
+        if (driversRes.ok) {
+          const driversData = await driversRes.json();
+          setDrivers(driversData);
+        }
       } catch (error) {
-        console.error('Failed to fetch orders:', error);
+        console.error('Failed to fetch data:', error);
       } finally {
         setFetching(false);
       }
     };
-    fetchOrders();
-  }, []);
-
-  useEffect(() => {
-    const fetchDrivers = async () => {
-      try {
-        const res = await fetch('/api/drivers');
-        if (res.ok) {
-          const data = await res.json();
-          setDrivers(data);
-        }
-      } catch (error) {
-        console.error('Failed to fetch drivers:', error);
-      }
-    };
-    fetchDrivers();
+    fetchData();
   }, []);
 
   const handleApprove = async () => {
