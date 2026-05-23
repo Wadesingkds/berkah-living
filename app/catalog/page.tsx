@@ -92,7 +92,7 @@ export default function CatalogPage() {
       </div>
 
       {totalItems > 0 && (
-        <Link href="/buyer/cart">
+        <Link href="/cart">
           <div className="fixed bottom-4 left-4 right-4 bg-primary text-white rounded-xl p-3 flex items-center justify-between shadow-lg z-50">
             <div className="flex items-center gap-2">
               <ShoppingCart size={18} />

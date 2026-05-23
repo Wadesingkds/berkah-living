@@ -7,12 +7,12 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    router.push('/admin/dashboard');
+    router.push('/catalog');
   }, [router]);
 
   return (
     <div className="flex items-center justify-center min-h-screen">
-      <p>Redirecting to dashboard...</p>
+      <p>Loading catalog...</p>
     </div>
   );
 }

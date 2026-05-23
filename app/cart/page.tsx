@@ -17,7 +17,7 @@ export default function CartPage() {
         </div>
         <p className="text-lg font-medium mb-1">Keranjang kosong</p>
         <p className="text-sm text-muted-foreground mb-4">Yuk tambah produk dulu</p>
-        <Link href="/buyer/catalog">
+        <Link href="/catalog">
           <Button>Lihat Katalog</Button>
         </Link>
       </div>
@@ -28,7 +28,7 @@ export default function CartPage() {
     <div className="min-h-full bg-background pb-24">
       <div className="p-4">
         <div className="flex items-center gap-2 mb-4">
-          <Link href="/buyer/catalog">
+          <Link href="/catalog">
             <ArrowLeft size={20} className="text-muted-foreground" />
           </Link>
           <h1 className="text-lg font-bold">Keranjang</h1>
@@ -69,7 +69,7 @@ export default function CartPage() {
           <span className="text-sm text-muted-foreground">Total</span>
           <span className="text-lg font-bold">Rp {getTotal().toLocaleString("id-ID")}</span>
         </div>
-        <Link href="/buyer/checkout">
+        <Link href="/checkout">
           <Button className="w-full">Checkout</Button>
         </Link>
       </div>

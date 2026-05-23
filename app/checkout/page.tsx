@@ -30,7 +30,7 @@ export default function CheckoutPage() {
     return (
       <div className="min-h-full flex flex-col items-center justify-center p-4 text-center">
         <p className="text-lg font-medium mb-1">Keranjang kosong</p>
-        <Link href="/buyer/catalog">
+        <Link href="/catalog">
           <Button className="mt-4">Lihat Katalog</Button>
         </Link>
       </div>
@@ -59,7 +59,7 @@ export default function CheckoutPage() {
             </p>
           </>
         )}
-        <Link href="/buyer/catalog">
+        <Link href="/catalog">
           <Button>Kembali ke Katalog</Button>
         </Link>
       </div>
@@ -167,7 +167,7 @@ export default function CheckoutPage() {
     <div className="min-h-full bg-background pb-24">
       <div className="p-4 space-y-4">
         <div className="flex items-center gap-2">
-          <Link href="/buyer/cart">
+          <Link href="/cart">
             <ArrowLeft size={20} className="text-muted-foreground" />
           </Link>
           <h1 className="text-lg font-bold">Checkout</h1>
