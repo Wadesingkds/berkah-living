@@ -11,7 +11,7 @@ const menuItems = [
   { label: "Retention & Followup", icon: Bell, href: "#" },
   { label: "Daftar Belanja Supplier", icon: ShoppingCart, href: "#" },
   { label: "Pre-order", icon: ShoppingCart, href: "#" },
-  { label: "Pengaturan Toko", icon: Settings, href: "/admin/settings/store" },
+  { label: "Pengaturan Toko", icon: Settings, href: "/admin/settings/store-simple" },
   { label: "Admin & Akses", icon: Users, href: "#" },
 ];
 
