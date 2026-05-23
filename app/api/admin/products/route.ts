@@ -11,7 +11,7 @@ const STORE_ID = process.env.NEXT_PUBLIC_STORE_ID!
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    const category = searchParams.get('category')
+    const categoryId = searchParams.get('category_id')
 
     let query = supabase
       .from('products')
@@ -19,8 +19,8 @@ export async function GET(request: NextRequest) {
       .eq('store_id', STORE_ID)
       .order('created_at', { ascending: false })
 
-    if (category && category !== 'all') {
-      query = query.eq('category', category)
+    if (categoryId && categoryId !== 'all') {
+      query = query.eq('category_id', categoryId)
     }
 
     const { data, error } = await query
@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { name, description, price, compare_at_price, images, category, is_active } = body
+    const { name, description, price, compare_at_price, images, category_id, is_active } = body
 
     // Validation
     if (!name || !name.trim()) {
@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
         description: description || '',
         price: parseInt(price),
         compare_at_price: compare_at_price ? parseInt(compare_at_price) : null,
-        category: category || 'lainnya',
+        category_id: category_id || null,
         images: images || [],
         is_active: is_active !== false,
         created_at: new Date().toISOString(),

@@ -4,11 +4,17 @@ import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { Plus, Edit2, Trash2, Search } from 'lucide-react'
 
+interface Category {
+  id: string
+  name: string
+  slug: string
+}
+
 interface Product {
   id: string
   name: string
   price: number
-  category: string
+  category_id: string
   images: string[]
   is_active: boolean
   created_at: string
@@ -17,16 +23,29 @@ interface Product {
 export default function ProductsPage() {
   const router = useRouter()
   const [products, setProducts] = useState<Product[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
-  const [filterCategory, setFilterCategory] = useState('all')
+  const [filterCategoryId, setFilterCategoryId] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
+
+  const fetchCategories = useCallback(async () => {
+    try {
+      const res = await fetch('/api/admin/categories')
+      if (res.ok) {
+        const data = await res.json()
+        setCategories(data)
+      }
+    } catch (err) {
+      console.error('Failed to fetch categories:', err)
+    }
+  }, [])
 
   const fetchProducts = useCallback(async () => {
     try {
       setLoading(true)
       const url = new URL('/api/admin/products', window.location.origin)
-      if (filterCategory !== 'all') {
-        url.searchParams.append('category', filterCategory)
+      if (filterCategoryId !== 'all') {
+        url.searchParams.append('category_id', filterCategoryId)
       }
       const res = await fetch(url.toString())
       if (res.ok) {
@@ -38,11 +57,12 @@ export default function ProductsPage() {
     } finally {
       setLoading(false)
     }
-  }, [filterCategory])
+  }, [filterCategoryId])
 
   useEffect(() => {
+    fetchCategories()
     fetchProducts()
-  }, [fetchProducts])
+  }, [fetchCategories, fetchProducts])
 
   const handleDelete = async (id: string, name: string) => {
     if (!confirm(`Yakin hapus produk "${name}"?`)) return
@@ -87,17 +107,27 @@ export default function ProductsPage() {
 
       <div className="mb-6 space-y-4">
         <div className="flex gap-2 flex-wrap">
-          {['all', 'daster', 'parfum', 'aksesoris'].map((cat) => (
+          <button
+            onClick={() => setFilterCategoryId('all')}
+            className={`px-4 py-2 rounded-lg transition ${
+              filterCategoryId === 'all'
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+            }`}
+          >
+            Semua
+          </button>
+          {categories.map((cat) => (
             <button
-              key={cat}
-              onClick={() => setFilterCategory(cat)}
+              key={cat.id}
+              onClick={() => setFilterCategoryId(cat.id)}
               className={`px-4 py-2 rounded-lg transition ${
-                filterCategory === cat
+                filterCategoryId === cat.id
                   ? 'bg-blue-600 text-white'
                   : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
               }`}
             >
-              {cat === 'all' ? 'Semua' : cat.charAt(0).toUpperCase() + cat.slice(1)}
+              {cat.name}
             </button>
           ))}
         </div>
@@ -138,7 +168,7 @@ export default function ProductsPage() {
                     <td className="px-6 py-4 font-medium">{product.name}</td>
                     <td className="px-6 py-4 text-sm">
                       <span className="px-2 py-1 bg-gray-100 rounded text-gray-700">
-                        {product.category}
+                        {categories.find(c => c.id === product.category_id)?.name || '-'}
                       </span>
                     </td>
                     <td className="px-6 py-4">

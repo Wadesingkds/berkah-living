@@ -4,13 +4,19 @@ import { useState, useEffect, useCallback } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { Save, Upload, X, AlertCircle } from 'lucide-react'
 
+interface Category {
+  id: string
+  name: string
+  slug: string
+}
+
 interface Product {
   id: string
   name: string
   description: string
   price: number
   compare_at_price?: number
-  category: string
+  category_id: string
   images: string[]
   is_active: boolean
 }
@@ -26,16 +32,29 @@ export default function ProductFormPage() {
     description: '',
     price: 0,
     compare_at_price: 0,
-    category: 'daster',
+    category_id: '',
     images: [],
     is_active: true,
   })
 
+  const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(!isNew)
   const [saving, setSaving] = useState(false)
   const [uploadingImage, setUploadingImage] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+
+  const fetchCategories = useCallback(async () => {
+    try {
+      const res = await fetch('/api/admin/categories')
+      if (res.ok) {
+        const data = await res.json()
+        setCategories(data)
+      }
+    } catch (err) {
+      console.error('Failed to fetch categories:', err)
+    }
+  }, [])
 
   const fetchProduct = useCallback(async () => {
     try {
@@ -56,10 +75,11 @@ export default function ProductFormPage() {
   }, [productId])
 
   useEffect(() => {
+    fetchCategories()
     if (!isNew) {
       fetchProduct()
     }
-  }, [isNew, fetchProduct])
+  }, [isNew, fetchProduct, fetchCategories])
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
@@ -220,14 +240,16 @@ export default function ProductFormPage() {
             Kategori *
           </label>
           <select
-            value={product.category || 'daster'}
-            onChange={e => setProduct({ ...product, category: e.target.value })}
+            value={product.category_id || ''}
+            onChange={e => setProduct({ ...product, category_id: e.target.value })}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
-            <option value="daster">Daster</option>
-            <option value="parfum">Parfum</option>
-            <option value="aksesoris">Aksesoris</option>
-            <option value="lainnya">Lainnya</option>
+            <option value="">-- Pilih Kategori --</option>
+            {categories.map(cat => (
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
+              </option>
+            ))}
           </select>
         </div>
 
