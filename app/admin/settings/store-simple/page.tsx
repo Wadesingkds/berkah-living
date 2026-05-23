@@ -44,6 +44,10 @@ export default function StoreSettingsSimplePage() {
 
       if (response.ok) {
         alert("Pengaturan toko berhasil disimpan");
+        // Redirect ke halaman settings setelah 1 detik
+        setTimeout(() => {
+          router.push("/admin/settings");
+        }, 1000);
       } else {
         alert("Gagal menyimpan pengaturan toko");
       }
