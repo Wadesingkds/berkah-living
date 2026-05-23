@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, ClipboardList, Package, Users, MoreHorizontal } from "lucide-react";
+import { Home, ClipboardList, Package, Users, MoreHorizontal, Tag } from "lucide-react";
 
 const navItems = [
   { href: "/admin/dashboard", label: "Beranda", icon: Home },
   { href: "/admin/orders", label: "Order", icon: ClipboardList },
   { href: "/admin/products", label: "Produk", icon: Package },
+  { href: "/admin/categories", label: "Kategori", icon: Tag },
   { href: "/admin/stock", label: "Stok", icon: Package },
   { href: "/admin/contacts", label: "Kontak", icon: Users },
   { href: "/admin/settings", label: "Lainnya", icon: MoreHorizontal },
