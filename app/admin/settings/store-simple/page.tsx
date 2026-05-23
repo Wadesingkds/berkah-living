@@ -46,10 +46,10 @@ export default function StoreSettingsSimplePage() {
       console.log("Save response:", response.status, data);
 
       if (response.ok) {
-        // Langsung redirect tanpa alert
-        router.push("/admin/settings");
+        // Redirect pakai window.location karena router.push kadang issue
+        window.location.href = "/admin/settings";
       } else {
-        alert("Gagal menyimpan: " + (data.error || "未知错误"));
+        alert("Gagal menyimpan: " + (data.error || "Unknown error"));
       }
     } catch (err) {
       console.error("Save error:", err);
