@@ -1,25 +1,70 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Save } from "lucide-react";
+import { ArrowLeft, Save, Loader2 } from "lucide-react";
 
 export default function StoreSettingsSimplePage() {
   const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [settings, setSettings] = useState({
-    store_name: "Berkah Living",
-    store_phone: "08123456789",
-    store_email: "berkah@example.com",
-    store_address: "Jl. Contoh No. 123, Kudus, Jawa Tengah",
-    whatsapp_number: "6282220205694",
-    bank_name: "BNI",
-    bank_account_number: "884343871",
-    bank_account_name: "Didik Prasetiadi",
+    store_name: "",
+    store_phone: "",
+    store_email: "",
+    store_address: "",
+    whatsapp_number: "",
+    bank_name: "",
+    bank_account_number: "",
+    bank_account_name: "",
   });
 
-  const handleSave = () => {
-    alert("Pengaturan toko berhasil disimpan");
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const fetchSettings = async () => {
+    try {
+      const response = await fetch("/api/admin/settings/store");
+      if (response.ok) {
+        const data = await response.json();
+        setSettings(data);
+      }
+    } catch (error) {
+      console.error("Error fetching settings:", error);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      const response = await fetch("/api/admin/settings/store", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(settings),
+      });
+
+      if (response.ok) {
+        alert("Pengaturan toko berhasil disimpan");
+      } else {
+        alert("Gagal menyimpan pengaturan toko");
+      }
+    } catch (error) {
+      alert("Gagal menyimpan pengaturan toko");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 space-y-4">
@@ -123,10 +168,11 @@ export default function StoreSettingsSimplePage() {
 
       <button
         onClick={handleSave}
-        className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium flex items-center justify-center gap-2"
+        disabled={saving}
+        className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium flex items-center justify-center gap-2 disabled:opacity-50"
       >
-        <Save size={16} />
-        Simpan Pengaturan
+        {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save size={16} />}
+        {saving ? "Menyimpan..." : "Simpan Pengaturan"}
       </button>
     </div>
   );
