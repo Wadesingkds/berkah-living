@@ -6,10 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
 import { ArrowLeft, Save, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useToast } from "@/hooks/use-toast";
 
 interface StoreSettings {
   store_name: string;
@@ -74,19 +72,12 @@ export default function StoreSettingsPage() {
       });
 
       if (response.ok) {
-        toast({
-          title: "Berhasil",
-          description: "Pengaturan toko berhasil disimpan",
-        });
+        alert("Pengaturan toko berhasil disimpan");
       } else {
         throw new Error("Failed to save settings");
       }
     } catch (error) {
-      toast({
-        title: "Gagal",
-        description: "Gagal menyimpan pengaturan toko",
-        variant: "destructive",
-      });
+      alert("Gagal menyimpan pengaturan toko");
     } finally {
       setSaving(false);
     }
@@ -188,13 +179,15 @@ export default function StoreSettingsPage() {
           <CardTitle className="text-sm">Jam Operasional</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex items-center justify-between">
-            <Label htmlFor="is_open">Status Toko</Label>
-            <Switch
+          <div className="flex items-center gap-2">
+            <input
               id="is_open"
+              type="checkbox"
               checked={settings.is_open}
-              onCheckedChange={(checked) => setSettings({ ...settings, is_open: checked })}
+              onChange={(e) => setSettings({ ...settings, is_open: e.target.checked })}
+              className="w-4 h-4"
             />
+            <Label htmlFor="is_open">Toko Buka</Label>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
