@@ -23,6 +23,7 @@ export default function StockPage() {
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<typeof mockProducts[0] | null>(null);
   const [adjustQty, setAdjustQty] = useState(0);
+  const [saving, setSaving] = useState(false);
 
   const filtered = mockProducts.filter((p) => {
     if (activeCategory !== "Semua" && p.category !== activeCategory) return false;
@@ -31,6 +32,39 @@ export default function StockPage() {
 
   const criticalCount = mockProducts.filter((p) => p.stock <= p.min_stock && p.stock > 0).length;
   const outOfStock = mockProducts.filter((p) => p.stock === 0).length;
+
+  const handleSaveAdjustment = async () => {
+    if (!selected || adjustQty === 0) return;
+    
+    setSaving(true);
+    try {
+      const response = await fetch('/api/stock/adjust', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          product_id: selected.id,
+          adjustment: adjustQty
+        })
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        alert(result.error || 'Gagal menyimpan perubahan');
+        return;
+      }
+
+      alert('Stok berhasil diperbarui');
+      setSelected(null);
+      setAdjustQty(0);
+      // TODO: Refresh data dari server
+    } catch (error) {
+      console.error('Save error:', error);
+      alert('Terjadi kesalahan saat menyimpan');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <div className="p-4 space-y-3">
@@ -135,7 +169,9 @@ export default function StockPage() {
                 <Button size="icon" variant="outline" onClick={() => setAdjustQty((q) => q + 1)}><Plus size={14} /></Button>
               </div>
 
-              <Button className="w-full" disabled={adjustQty === 0}>Simpan Perubahan</Button>
+              <Button className="w-full" disabled={adjustQty === 0 || saving} onClick={handleSaveAdjustment}>
+                {saving ? "Menyimpan..." : "Simpan Perubahan"}
+              </Button>
             </div>
           )}
         </DialogContent>
