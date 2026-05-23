@@ -42,16 +42,17 @@ export default function StoreSettingsSimplePage() {
         body: JSON.stringify(settings),
       });
 
+      const data = await response.json();
+      console.log("Save response:", response.status, data);
+
       if (response.ok) {
-        alert("Pengaturan toko berhasil disimpan");
-        // Redirect ke halaman settings setelah 1 detik
-        setTimeout(() => {
-          router.push("/admin/settings");
-        }, 1000);
+        // Langsung redirect tanpa alert
+        router.push("/admin/settings");
       } else {
-        alert("Gagal menyimpan pengaturan toko");
+        alert("Gagal menyimpan: " + (data.error || "未知错误"));
       }
     } catch (err) {
+      console.error("Save error:", err);
       alert("Gagal menyimpan pengaturan toko");
     } finally {
       setSaving(false);
