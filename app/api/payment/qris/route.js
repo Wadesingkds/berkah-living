@@ -1,8 +1,39 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!supabaseUrl || !supabaseKey) {
+  throw new Error('Supabase credentials not configured');
+}
+
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 export async function POST(request) {
   try {
-    const { orderId, amount, customerName, customerPhone } = await request.json();
+    const body = await request.json();
+    
+    // Handle webhook notification from Pakasir
+    if (body.event === 'payment.completed' || body.status === 'PAID') {
+      const { transactionId, status, amount } = body;
+      
+      // Update order status in Supabase
+      const { error } = await supabase
+        .from('orders')
+        .update({ status: 'PAID' })
+        .eq('id', transactionId);
+      
+      if (error) {
+        console.error('Error updating order status:', error);
+        return NextResponse.json({ error: 'Failed to update order' }, { status: 500 });
+      }
+      
+      return NextResponse.json({ success: true });
+    }
+    
+    // Handle QRIS creation request (from checkout page)
+    const { orderId, amount, customerName, customerPhone } = body;
 
     const PAKASIR_SLUG = process.env.NEXT_PUBLIC_PAKASIR_SLUG || 'kiosk-wa';
     const PAKASIR_API_KEY = process.env.NEXT_PUBLIC_PAKASIR_API_KEY;
@@ -52,7 +83,7 @@ export async function POST(request) {
     });
   } catch (error) {
     return NextResponse.json(
-      { error: (error).message },
+      { error: error.message },
       { status: 500 }
     );
   }
@@ -105,7 +136,7 @@ export async function GET(request) {
     });
   } catch (error) {
     return NextResponse.json(
-      { error: (error).message },
+      { error: error.message },
       { status: 500 }
     );
   }

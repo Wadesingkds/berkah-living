@@ -74,25 +74,61 @@ export default function CheckoutPage() {
 
     setLoading(true);
     try {
+      // Create or get customer first
+      let customerId = null;
+      
+      // Check if customer exists
+      const customerCheckRes = await fetch(`/api/customers?phone=${phone}`);
+      const existingCustomers = await customerCheckRes.json();
+      
+      if (existingCustomers && existingCustomers.length > 0) {
+        customerId = existingCustomers[0].id;
+      } else {
+        // Create new customer
+        const customerRes = await fetch('/api/customers', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, phone }),
+        });
+        const customerData = await customerRes.json();
+        customerId = customerData.id;
+      }
+
       // Create order in Supabase
       const orderResponse = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           order_number: `ORD-${Date.now()}`,
-          customer_id: null, // TODO: get from auth
+          customer_id: customerId,
           total: getTotal(),
           status: 'PENDING',
           payment_type: payment,
           source: 'CATALOG',
-          notes: notes,
+          notes: delivery === 'DELIVERY' ? `Alamat: ${address}\nCatatan: ${notes}` : notes,
         }),
       });
 
       const order = await orderResponse.json();
+      console.log('Order created:', order);
+
+      // Create order items
+      for (const item of items) {
+        await fetch('/api/order-items', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            order_id: order.id,
+            product_id: item.productId,
+            qty: item.qty,
+            price: item.price,
+          }),
+        });
+      }
 
       if (payment === 'QRIS') {
         // Create QRIS payment
+        console.log('Creating QRIS payment...');
         const qrisResponse = await fetch('/api/payment/qris', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -105,15 +141,22 @@ export default function CheckoutPage() {
         });
 
         const qrisData = await qrisResponse.json();
-        if (qrisData.success) {
+        console.log('QRIS response:', qrisData);
+        
+        if (qrisData.success && qrisData.qrCodeUrl) {
           setQrCode(qrisData.qrCodeUrl);
           setTransactionId(qrisData.transactionId);
+        } else {
+          console.error('QRIS creation failed:', qrisData);
+          alert('Gagal membuat QRIS. Silakan pilih metode pembayaran lain.');
+          return;
         }
       }
 
       clearCart();
       setSubmitted(true);
     } catch (error) {
+      console.error('Checkout error:', error);
       alert('Error: ' + (error as Error).message);
     } finally {
       setLoading(false);
