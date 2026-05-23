@@ -36,10 +36,10 @@ interface MockOrder {
 }
 
 const mockOrders: MockOrder[] = [
-  { id: "1", order_number: "ORD-20260522-0001", customer: { name: "Budi Santoso", phone: "08123456789" }, total: 450000, status: "PENDING", payment_type: "QRIS", items: [{ product: { name: "Ayam Kampung Utuh" }, qty: 2 }, { product: { name: "Daging Sapi Giling" }, qty: 1 }], notes: "Antar pagi ya", created_at: "2026-05-22 08:30" },
-  { id: "2", order_number: "ORD-20260522-0002", customer: { name: "Ani Wulandari", phone: "08234567890" }, total: 280000, status: "PAID", payment_type: "TRANSFER", items: [{ product: { name: "Ayam Kampung Utuh" }, qty: 1 }], notes: null, created_at: "2026-05-22 09:15" },
-  { id: "3", order_number: "ORD-20260522-0003", customer: { name: "Citra Lestari", phone: "08345678901" }, total: 620000, status: "DELIVERED", payment_type: "COD", items: [{ product: { name: "Daging Sapi Giling" }, qty: 2 }, { product: { name: "Ayam Kampung Utuh" }, qty: 1 }], notes: "Rumah warna hijau", created_at: "2026-05-22 10:00" },
-  { id: "4", order_number: "ORD-20260522-0004", customer: { name: "Dedi Pratama", phone: "08456789012" }, total: 150000, status: "DONE", payment_type: "QRIS", items: [{ product: { name: "Ayam Kampung Utuh" }, qty: 1 }], notes: null, created_at: "2026-05-22 07:00" },
+  { id: "550e8400-e29b-41d4-a716-446655440001", order_number: "ORD-20260522-0001", customer: { name: "Budi Santoso", phone: "08123456789" }, total: 450000, status: "PENDING", payment_type: "QRIS", items: [{ product: { name: "Ayam Kampung Utuh" }, qty: 2 }, { product: { name: "Daging Sapi Giling" }, qty: 1 }], notes: "Antar pagi ya", created_at: "2026-05-22 08:30" },
+  { id: "550e8400-e29b-41d4-a716-446655440002", order_number: "ORD-20260522-0002", customer: { name: "Ani Wulandari", phone: "08234567890" }, total: 280000, status: "PAID", payment_type: "TRANSFER", items: [{ product: { name: "Ayam Kampung Utuh" }, qty: 1 }], notes: null, created_at: "2026-05-22 09:15" },
+  { id: "550e8400-e29b-41d4-a716-446655440003", order_number: "ORD-20260522-0003", customer: { name: "Citra Lestari", phone: "08345678901" }, total: 620000, status: "DELIVERED", payment_type: "COD", items: [{ product: { name: "Daging Sapi Giling" }, qty: 2 }, { product: { name: "Ayam Kampung Utuh" }, qty: 1 }], notes: "Rumah warna hijau", created_at: "2026-05-22 10:00" },
+  { id: "550e8400-e29b-41d4-a716-446655440004", order_number: "ORD-20260522-0004", customer: { name: "Dedi Pratama", phone: "08456789012" }, total: 150000, status: "DONE", payment_type: "QRIS", items: [{ product: { name: "Ayam Kampung Utuh" }, qty: 1 }], notes: null, created_at: "2026-05-22 07:00" },
 ];
 
 export default function OrdersPage() {
