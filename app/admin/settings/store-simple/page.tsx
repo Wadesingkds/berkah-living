@@ -58,7 +58,7 @@ export default function StoreSettingsSimplePage() {
       }
     } catch (err) {
       console.error("Save error:", err);
-      alert("Gagal menyimpan pengaturan toko: " + err.message);
+      alert("Gagal menyimpan pengaturan toko: " + (err instanceof Error ? err.message : "Unknown error"));
     } finally {
       setSaving(false);
     }
