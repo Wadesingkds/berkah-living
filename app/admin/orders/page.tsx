@@ -144,7 +144,10 @@ export default function OrdersPage() {
     if (activeTab === "Sudah Dibayar") return o.status === "PAID";
     if (activeTab === "Selesai") return o.status === "DONE";
     return true;
-  }).filter((o) => o.customer.name.toLowerCase().includes(search.toLowerCase()) || o.order_number.toLowerCase().includes(search.toLowerCase()));
+  }).filter((o) => {
+    const customerName = o.customer?.name || '';
+    return customerName.toLowerCase().includes(search.toLowerCase()) || o.order_number.toLowerCase().includes(search.toLowerCase());
+  });
 
   return (
     <div className="p-4 space-y-3">
@@ -177,17 +180,17 @@ export default function OrdersPage() {
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">
-                    {order.customer.name.charAt(0)}
+                    {order.customer?.name?.charAt(0) || 'U'}
                   </div>
                   <div>
-                    <p className="text-sm font-medium">{order.customer.name}</p>
+                    <p className="text-sm font-medium">{order.customer?.name || 'Unknown Customer'}</p>
                     <p className="text-xs text-muted-foreground">{order.order_number}</p>
                   </div>
                 </div>
                 <Badge className={statusColors[order.status]}>{order.status}</Badge>
               </div>
               <div className="text-xs text-muted-foreground mb-1">
-                {order.items.map((i) => `${i.product.name} x${i.qty}`).join(", ")}
+                {order.items?.map((i) => `${i.product.name} x${i.qty}`).join(", ") || 'No items'}
               </div>
               <div className="flex items-center justify-between">
                 <p className="text-sm font-bold">Rp {order.total.toLocaleString("id-ID")}</p>
@@ -207,23 +210,23 @@ export default function OrdersPage() {
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary">
-                  {selected.customer.name.charAt(0)}
+                  {selected.customer?.name?.charAt(0) || 'U'}
                 </div>
                 <div>
-                  <p className="font-medium">{selected.customer.name}</p>
+                  <p className="font-medium">{selected.customer?.name || 'Unknown Customer'}</p>
                   <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                    <Phone size={12} /> {selected.customer.phone}
+                    <Phone size={12} /> {selected.customer?.phone || 'No phone'}
                   </div>
                 </div>
               </div>
 
               <div className="space-y-2">
-                {selected.items.map((item, i) => (
+                {selected.items?.map((item, i) => (
                   <div key={i} className="flex justify-between text-sm">
                     <span>{item.product.name} x{item.qty}</span>
                     <span className="font-medium">Rp {(item.qty * selected.total / selected.items.length).toLocaleString("id-ID")}</span>
                   </div>
-                ))}
+                )) || <p className="text-sm text-muted-foreground">No items</p>}
                 <div className="border-t pt-2 flex justify-between font-bold">
                   <span>Total</span>
                   <span>Rp {selected.total.toLocaleString("id-ID")}</span>
