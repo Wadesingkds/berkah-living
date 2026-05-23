@@ -40,36 +40,44 @@ export default function StoreSettingsSimplePage() {
     fetchSettings();
   }, []);
 
-  const handleSave = async () => {
-    setSaving(true);
-    try {
-      const response = await fetch("/api/admin/settings/store", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          store_name: storeName,
-          store_phone: storePhone,
-          store_email: storeEmail,
-          store_address: storeAddress,
-          whatsapp_number: whatsappNumber,
-          bank_name: bankName,
-          bank_account_number: bankAccountNumber,
-          bank_account_name: bankAccountName,
-        }),
-      });
+  useEffect(() => {
+    const btn = document.getElementById("save-btn");
+    if (btn) {
+      const handleClick = async () => {
+        setSaving(true);
+        try {
+          const response = await fetch("/api/admin/settings/store", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              store_name: storeName,
+              store_phone: storePhone,
+              store_email: storeEmail,
+              store_address: storeAddress,
+              whatsapp_number: whatsappNumber,
+              bank_name: bankName,
+              bank_account_number: bankAccountNumber,
+              bank_account_name: bankAccountName,
+            }),
+          });
 
-      if (response.ok) {
-        alert("Pengaturan toko berhasil disimpan!");
-        window.location.href = "/admin/settings";
-      } else {
-        alert("Gagal menyimpan pengaturan toko");
-      }
-    } catch (err) {
-      alert("Error: " + (err instanceof Error ? err.message : "Unknown"));
-    } finally {
-      setSaving(false);
+          if (response.ok) {
+            alert("Pengaturan toko berhasil disimpan!");
+            window.location.href = "/admin/settings";
+          } else {
+            alert("Gagal menyimpan pengaturan toko");
+          }
+        } catch (err) {
+          alert("Error: " + (err instanceof Error ? err.message : "Unknown"));
+        } finally {
+          setSaving(false);
+        }
+      };
+
+      btn.addEventListener("click", handleClick);
+      return () => btn.removeEventListener("click", handleClick);
     }
-  };
+  }, [storeName, storePhone, storeEmail, storeAddress, whatsappNumber, bankName, bankAccountNumber, bankAccountName]);
 
   if (loading) {
     return (
@@ -180,7 +188,7 @@ export default function StoreSettingsSimplePage() {
       </div>
 
       <button
-        onClick={handleSave}
+        id="save-btn"
         disabled={saving}
         className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium flex items-center justify-center gap-2 disabled:opacity-50"
       >
