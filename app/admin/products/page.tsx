@@ -43,23 +43,6 @@ export default function ProductsPage() {
   useEffect(() => {
     fetchProducts()
   }, [filterCategory])
-    try {
-      setLoading(true)
-      const url = new URL('/api/admin/products', window.location.origin)
-      if (filterCategory !== 'all') {
-        url.searchParams.append('category', filterCategory)
-      }
-      const res = await fetch(url.toString())
-      if (res.ok) {
-        const data = await res.json()
-        setProducts(data)
-      }
-    } catch (err) {
-      console.error('Failed to fetch products:', err)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   const handleDelete = async (id: string, name: string) => {
     if (!confirm(`Yakin hapus produk "${name}"?`)) return
