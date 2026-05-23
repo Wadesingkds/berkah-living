@@ -21,11 +21,28 @@ export default function ProductsPage() {
   const [filterCategory, setFilterCategory] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
 
+  const fetchProducts = async () => {
+    try {
+      setLoading(true)
+      const url = new URL('/api/admin/products', window.location.origin)
+      if (filterCategory !== 'all') {
+        url.searchParams.append('category', filterCategory)
+      }
+      const res = await fetch(url.toString())
+      if (res.ok) {
+        const data = await res.json()
+        setProducts(data)
+      }
+    } catch (err) {
+      console.error('Failed to fetch products:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   useEffect(() => {
     fetchProducts()
   }, [filterCategory])
-
-  const fetchProducts = async () => {
     try {
       setLoading(true)
       const url = new URL('/api/admin/products', window.location.origin)

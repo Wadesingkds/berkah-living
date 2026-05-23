@@ -37,13 +37,29 @@ export default function ProductFormPage() {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
 
+  const fetchProduct = async () => {
+    try {
+      setLoading(true)
+      const res = await fetch(`/api/admin/products/${productId}`)
+      if (res.ok) {
+        const data = await res.json()
+        setProduct(data)
+      } else {
+        setError('Gagal memuat produk')
+      }
+    } catch (err) {
+      console.error('Failed to fetch product:', err)
+      setError('Error: ' + (err as Error).message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   useEffect(() => {
     if (!isNew) {
       fetchProduct()
     }
   }, [productId, isNew])
-
-  const fetchProduct = async () => {
     try {
       setLoading(true)
       const res = await fetch(`/api/admin/products/${productId}`)
