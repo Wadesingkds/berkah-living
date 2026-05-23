@@ -1,14 +1,10 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
-const supabase = createClient(supabaseUrl, supabaseKey)
+import { supabaseServer } from '@/lib/supabase/server'
 
 export async function POST() {
   try {
     // Create categories table
-    const { error: createError } = await supabase.rpc('exec_sql', {
+    const { error: createError } = await supabaseServer.rpc('exec_sql', {
       sql: `
         CREATE TABLE IF NOT EXISTS categories (
           id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -28,7 +24,7 @@ export async function POST() {
     }
 
     // Insert default categories
-    const { error: insertError } = await supabase
+    const { error: insertError } = await supabaseServer
       .from('categories')
       .upsert([
         { name: 'Daster', slug: 'daster', description: 'Koleksi daster premium', sort_order: 1 },
@@ -42,7 +38,7 @@ export async function POST() {
     }
 
     // Add category_id column to products
-    const { error: alterError } = await supabase.rpc('exec_sql', {
+    const { error: alterError } = await supabaseServer.rpc('exec_sql', {
       sql: `ALTER TABLE products ADD COLUMN IF NOT EXISTS category_id UUID;`
     })
 

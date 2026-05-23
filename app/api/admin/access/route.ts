@@ -1,20 +1,11 @@
-import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-
-if (!supabaseUrl || !supabaseKey) {
-  throw new Error('Missing Supabase credentials')
-}
-
-const supabase = createClient(supabaseUrl, supabaseKey)
+import { supabaseServer } from '@/lib/supabase/server'
 
 export async function GET() {
   try {
     const storeId = process.env.NEXT_PUBLIC_STORE_ID
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseServer
       .from('admins')
       .select('*')
       .eq('store_id', storeId)
@@ -52,7 +43,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseServer
       .from('admins')
       .insert([
         {
