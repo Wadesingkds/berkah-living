@@ -1,10 +1,5 @@
-import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+import { supabaseServer } from '@/lib/supabase/server'
 
 export async function POST(request: NextRequest) {
   try {
@@ -55,7 +50,7 @@ export async function POST(request: NextRequest) {
         const buffer = Buffer.from(arrayBuffer)
 
         // Upload to Supabase Storage
-        const { data, error: uploadError } = await supabase.storage
+        const { data, error: uploadError } = await supabaseServer.storage
           .from('products')
           .upload(filename, buffer, {
             contentType: file.type,
@@ -68,7 +63,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Get public URL
-        const { data: { publicUrl } } = supabase.storage
+        const { data: { publicUrl } } = supabaseServer.storage
           .from('products')
           .getPublicUrl(filename)
 

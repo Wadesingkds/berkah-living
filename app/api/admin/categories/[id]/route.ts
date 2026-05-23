@@ -1,9 +1,5 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
-const supabase = createClient(supabaseUrl, supabaseKey)
+import { supabaseServer } from '@/lib/supabase/server'
 
 // GET - Get single category
 export async function GET(
@@ -12,7 +8,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params
-    const { data, error } = await supabase
+    const { data, error } = await supabaseServer
       .from('categories')
       .select('*')
       .eq('id', id)
@@ -36,7 +32,7 @@ export async function PATCH(
     const { id } = await params
     const body = await request.json()
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseServer
       .from('categories')
       .update(body)
       .eq('id', id)
@@ -61,7 +57,7 @@ export async function DELETE(
     const { id } = await params
     
     // Check if category is used by products
-    const { count } = await supabase
+    const { count } = await supabaseServer
       .from('products')
       .select('*', { count: 'exact', head: true })
       .eq('category_id', id)
@@ -73,7 +69,7 @@ export async function DELETE(
       )
     }
 
-    const { error } = await supabase
+    const { error } = await supabaseServer
       .from('categories')
       .delete()
       .eq('id', id)

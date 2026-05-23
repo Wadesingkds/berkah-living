@@ -1,10 +1,5 @@
-import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+import { supabaseServer } from '@/lib/supabase/server'
 
 export async function GET(
   request: NextRequest,
@@ -12,7 +7,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params
-    const { data, error } = await supabase
+    const { data, error } = await supabaseServer
       .from('products')
       .select('*')
       .eq('id', id)
@@ -82,7 +77,7 @@ export async function PATCH(
     if (category) updateData.category = category
     if (is_active !== undefined) updateData.is_active = is_active
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseServer
       .from('products')
       .update(updateData)
       .eq('id', id)
@@ -108,7 +103,7 @@ export async function DELETE(
     const { id } = await params
 
     // Get product first to check if exists
-    const { data: product, error: fetchError } = await supabase
+    const { data: product, error: fetchError } = await supabaseServer
       .from('products')
       .select('id')
       .eq('id', id)
@@ -122,7 +117,7 @@ export async function DELETE(
     }
 
     // Delete product
-    const { error: deleteError } = await supabase
+    const { error: deleteError } = await supabaseServer
       .from('products')
       .delete()
       .eq('id', id)

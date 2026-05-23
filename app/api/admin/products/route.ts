@@ -1,10 +1,5 @@
-import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+import { supabaseServer } from '@/lib/supabase/server'
 
 const STORE_ID = process.env.NEXT_PUBLIC_STORE_ID!
 
@@ -13,7 +8,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const categoryId = searchParams.get('category_id')
 
-    let query = supabase
+    let query = supabaseServer
       .from('products')
       .select('*')
       .eq('store_id', STORE_ID)
@@ -70,7 +65,7 @@ export async function POST(request: NextRequest) {
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-|-$/g, '')
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseServer
       .from('products')
       .insert({
         store_id: STORE_ID,

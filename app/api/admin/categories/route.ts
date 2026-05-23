@@ -1,14 +1,10 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
-const supabase = createClient(supabaseUrl, supabaseKey)
+import { supabaseServer } from '@/lib/supabase/server'
 
 // GET - List all categories
 export async function GET() {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseServer
       .from('categories')
       .select('*')
       .order('sort_order', { ascending: true })
@@ -32,7 +28,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Name and slug required' }, { status: 400 })
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseServer
       .from('categories')
       .insert([{ name, slug, description, sort_order, is_active: true }])
       .select()
