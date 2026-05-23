@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
 interface Admin {
@@ -17,17 +17,16 @@ export default function AdminAccessPage() {
   const [admins, setAdmins] = useState<Admin[]>([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
-  const [editingId, setEditingId] = useState<string | null>(null)
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    role: 'staff' as 'owner' | 'admin' | 'staff',
-  })
-  const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
 
-  const fetchAdmins = useCallback(async () => {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchAdmins()
+    }, 100)
+    return () => clearTimeout(timer)
+  }, [])
+
+  const fetchAdmins = async () => {
     try {
       setLoading(true)
       const res = await fetch('/api/admin/access')
@@ -39,75 +38,11 @@ export default function AdminAccessPage() {
     } finally {
       setLoading(false)
     }
-  }, [])
-
-  useEffect(() => {
-    // Use setTimeout to avoid potential hydration issues
-    const timer = setTimeout(() => {
-      fetchAdmins()
-    }, 100)
-    return () => clearTimeout(timer)
-  }, [fetchAdmins])
-
-  const handleAddNew = () => {
-    setEditingId(null)
-    setFormData({ name: '', email: '', phone: '', role: 'staff' })
-    setShowForm(true)
-    setError('')
-  }
-
-  const handleEdit = (admin: Admin) => {
-    setEditingId(admin.id)
-    setFormData({
-      name: admin.name,
-      email: admin.email,
-      phone: admin.phone,
-      role: admin.role,
-    })
-    setShowForm(true)
-    setError('')
   }
 
   const handleCancel = () => {
     setShowForm(false)
-    setEditingId(null)
-    setFormData({ name: '', email: '', phone: '', role: 'staff' })
-  }
-
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!formData.name || !formData.email || !formData.phone) {
-      setError('Semua field harus diisi')
-      return
-    }
-
-    try {
-      setSaving(true)
-      setError('')
-
-      const method = editingId ? 'PUT' : 'POST'
-      const url = editingId
-        ? `/api/admin/access/${editingId}`
-        : '/api/admin/access'
-
-      const res = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      })
-
-      if (!res.ok) {
-        const errData = await res.json()
-        throw new Error(errData.error || 'Failed to save admin')
-      }
-
-      await fetchAdmins()
-      handleCancel()
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error saving admin')
-    } finally {
-      setSaving(false)
-    }
+    setError('')
   }
 
   const handleDelete = async (id: string) => {
@@ -166,30 +101,26 @@ export default function AdminAccessPage() {
         {/* Add Button */}
         {!showForm && (
           <button
-            onClick={handleAddNew}
+            onClick={() => setShowForm(true)}
             className="mb-6 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
           >
             + Tambah Admin
           </button>
         )}
 
-        {/* Form */}
+        {/* Form - Native HTML */}
         {showForm && (
           <div className="mb-6 p-6 bg-white rounded-lg border border-gray-200">
-            <h2 className="text-xl font-bold mb-4">
-              {editingId ? 'Edit Admin' : 'Tambah Admin Baru'}
-            </h2>
-            <form onSubmit={handleSave} className="space-y-4">
+            <h2 className="text-xl font-bold mb-4">Tambah Admin Baru</h2>
+            <form action="/api/admin/access" method="POST" className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Nama
                 </label>
                 <input
                   type="text"
-                  value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
+                  name="name"
+                  required
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Nama lengkap"
                 />
@@ -201,10 +132,8 @@ export default function AdminAccessPage() {
                 </label>
                 <input
                   type="email"
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
+                  name="email"
+                  required
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="email@example.com"
                 />
@@ -216,10 +145,8 @@ export default function AdminAccessPage() {
                 </label>
                 <input
                   type="tel"
-                  value={formData.phone}
-                  onChange={(e) =>
-                    setFormData({ ...formData, phone: e.target.value })
-                  }
+                  name="phone"
+                  required
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="08123456789"
                 />
@@ -230,13 +157,7 @@ export default function AdminAccessPage() {
                   Role
                 </label>
                 <select
-                  value={formData.role}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      role: e.target.value as 'owner' | 'admin' | 'staff',
-                    })
-                  }
+                  name="role"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="staff">Staff</option>
@@ -248,10 +169,9 @@ export default function AdminAccessPage() {
               <div className="flex gap-2 pt-4">
                 <button
                   type="submit"
-                  disabled={saving}
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 font-medium"
+                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
                 >
-                  {saving ? 'Menyimpan...' : 'Simpan'}
+                  Simpan
                 </button>
                 <button
                   type="button"
@@ -300,12 +220,6 @@ export default function AdminAccessPage() {
 
                 <div className="flex gap-2">
                   <button
-                    onClick={() => handleEdit(admin)}
-                    className="px-3 py-1 bg-blue-100 text-blue-600 rounded hover:bg-blue-200 text-sm font-medium"
-                  >
-                    Edit
-                  </button>
-                  <button
                     onClick={() => handleToggleStatus(admin)}
                     className={`px-3 py-1 rounded text-sm font-medium ${
                       admin.status === 'active'
@@ -332,7 +246,7 @@ export default function AdminAccessPage() {
           <div className="text-center py-12 text-gray-600">
             <p className="mb-4">Belum ada admin</p>
             <button
-              onClick={handleAddNew}
+              onClick={() => setShowForm(true)}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
             >
               Tambah Admin Pertama
