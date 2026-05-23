@@ -1,55 +1,69 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { ArrowLeft, Save, Loader2 } from "lucide-react";
 
 export default function StoreSettingsSimplePage() {
-  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [settings, setSettings] = useState({
-    store_name: "",
-    store_phone: "",
-    store_email: "",
-    store_address: "",
-    whatsapp_number: "",
-    bank_name: "",
-    bank_account_number: "",
-    bank_account_name: "",
-  });
+  const [storeName, setStoreName] = useState("");
+  const [storePhone, setStorePhone] = useState("");
+  const [storeEmail, setStoreEmail] = useState("");
+  const [storeAddress, setStoreAddress] = useState("");
+  const [whatsappNumber, setWhatsappNumber] = useState("");
+  const [bankName, setBankName] = useState("");
+  const [bankAccountNumber, setBankAccountNumber] = useState("");
+  const [bankAccountName, setBankAccountName] = useState("");
 
-  const fetchSettings = async () => {
-    try {
-      const response = await fetch("/api/admin/settings/store");
-      if (response.ok) {
-        const data = await response.json();
-        setSettings(data);
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const response = await fetch("/api/admin/settings/store");
+        if (response.ok) {
+          const data = await response.json();
+          setStoreName(data.store_name || "");
+          setStorePhone(data.store_phone || "");
+          setStoreEmail(data.store_email || "");
+          setStoreAddress(data.store_address || "");
+          setWhatsappNumber(data.whatsapp_number || "");
+          setBankName(data.bank_name || "");
+          setBankAccountNumber(data.bank_account_number || "");
+          setBankAccountName(data.bank_account_name || "");
+        }
+      } catch (err) {
+        console.error("Error fetching settings:", err);
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      console.error("Error fetching settings:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
 
-  const handleSave = async () => {
-    alert("Save clicked!");
+    fetchSettings();
+  }, []);
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
     setSaving(true);
     try {
       const response = await fetch("/api/admin/settings/store", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(settings),
+        body: JSON.stringify({
+          store_name: storeName,
+          store_phone: storePhone,
+          store_email: storeEmail,
+          store_address: storeAddress,
+          whatsapp_number: whatsappNumber,
+          bank_name: bankName,
+          bank_account_number: bankAccountNumber,
+          bank_account_name: bankAccountName,
+        }),
       });
 
-      const data = await response.json();
-
       if (response.ok) {
-        alert("Berhasil disimpan! Redirect ke settings...");
+        alert("Pengaturan toko berhasil disimpan!");
         window.location.href = "/admin/settings";
       } else {
-        alert("Gagal: " + (data.error || "Unknown error"));
+        alert("Gagal menyimpan pengaturan toko");
       }
     } catch (err) {
       alert("Error: " + (err instanceof Error ? err.message : "Unknown"));
@@ -57,13 +71,6 @@ export default function StoreSettingsSimplePage() {
       setSaving(false);
     }
   };
-
-  useEffect(() => {
-    // Wrap in setTimeout to avoid calling setState synchronously in effect
-    setTimeout(() => {
-      fetchSettings();
-    }, 0);
-  }, []);
 
   if (loading) {
     return (
@@ -77,7 +84,7 @@ export default function StoreSettingsSimplePage() {
     <div className="p-4 space-y-4">
       <div className="flex items-center gap-3">
         <button
-          onClick={() => router.back()}
+          onClick={() => window.history.back()}
           className="p-2 rounded-lg hover:bg-gray-100"
         >
           <ArrowLeft size={20} />
@@ -85,13 +92,13 @@ export default function StoreSettingsSimplePage() {
         <h1 className="text-lg font-bold">Pengaturan Toko</h1>
       </div>
 
-      <div className="space-y-4">
+      <form onSubmit={handleSave} className="space-y-4">
         <div>
           <label className="block text-sm font-medium mb-1">Nama Toko</label>
           <input
             type="text"
-            value={settings.store_name}
-            onChange={(e) => setSettings({ ...settings, store_name: e.target.value })}
+            value={storeName}
+            onChange={(e) => setStoreName(e.target.value)}
             className="w-full p-2 border rounded-lg"
           />
         </div>
@@ -100,8 +107,8 @@ export default function StoreSettingsSimplePage() {
           <label className="block text-sm font-medium mb-1">Nomor Telepon</label>
           <input
             type="text"
-            value={settings.store_phone}
-            onChange={(e) => setSettings({ ...settings, store_phone: e.target.value })}
+            value={storePhone}
+            onChange={(e) => setStorePhone(e.target.value)}
             className="w-full p-2 border rounded-lg"
           />
         </div>
@@ -110,8 +117,8 @@ export default function StoreSettingsSimplePage() {
           <label className="block text-sm font-medium mb-1">Email</label>
           <input
             type="email"
-            value={settings.store_email}
-            onChange={(e) => setSettings({ ...settings, store_email: e.target.value })}
+            value={storeEmail}
+            onChange={(e) => setStoreEmail(e.target.value)}
             className="w-full p-2 border rounded-lg"
           />
         </div>
@@ -119,8 +126,8 @@ export default function StoreSettingsSimplePage() {
         <div>
           <label className="block text-sm font-medium mb-1">Alamat Toko</label>
           <textarea
-            value={settings.store_address}
-            onChange={(e) => setSettings({ ...settings, store_address: e.target.value })}
+            value={storeAddress}
+            onChange={(e) => setStoreAddress(e.target.value)}
             className="w-full p-2 border rounded-lg"
             rows={3}
           />
@@ -130,22 +137,22 @@ export default function StoreSettingsSimplePage() {
           <label className="block text-sm font-medium mb-1">Nomor WhatsApp</label>
           <input
             type="text"
-            value={settings.whatsapp_number}
-            onChange={(e) => setSettings({ ...settings, whatsapp_number: e.target.value })}
+            value={whatsappNumber}
+            onChange={(e) => setWhatsappNumber(e.target.value)}
             className="w-full p-2 border rounded-lg"
           />
         </div>
 
         <div className="pt-4 border-t">
           <h2 className="text-sm font-medium mb-3">Informasi Pembayaran</h2>
-          
+
           <div className="space-y-3">
             <div>
               <label className="block text-sm font-medium mb-1">Nama Bank</label>
               <input
                 type="text"
-                value={settings.bank_name}
-                onChange={(e) => setSettings({ ...settings, bank_name: e.target.value })}
+                value={bankName}
+                onChange={(e) => setBankName(e.target.value)}
                 className="w-full p-2 border rounded-lg"
               />
             </div>
@@ -154,8 +161,8 @@ export default function StoreSettingsSimplePage() {
               <label className="block text-sm font-medium mb-1">Nomor Rekening</label>
               <input
                 type="text"
-                value={settings.bank_account_number}
-                onChange={(e) => setSettings({ ...settings, bank_account_number: e.target.value })}
+                value={bankAccountNumber}
+                onChange={(e) => setBankAccountNumber(e.target.value)}
                 className="w-full p-2 border rounded-lg"
               />
             </div>
@@ -164,23 +171,23 @@ export default function StoreSettingsSimplePage() {
               <label className="block text-sm font-medium mb-1">Nama Pemilik Rekening</label>
               <input
                 type="text"
-                value={settings.bank_account_name}
-                onChange={(e) => setSettings({ ...settings, bank_account_name: e.target.value })}
+                value={bankAccountName}
+                onChange={(e) => setBankAccountName(e.target.value)}
                 className="w-full p-2 border rounded-lg"
               />
             </div>
           </div>
         </div>
-      </div>
 
-      <button
-        onClick={handleSave}
-        disabled={saving}
-        className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium flex items-center justify-center gap-2 disabled:opacity-50"
-      >
-        {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save size={16} />}
-        {saving ? "Menyimpan..." : "Simpan Pengaturan"}
-      </button>
+        <button
+          type="submit"
+          disabled={saving}
+          className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium flex items-center justify-center gap-2 disabled:opacity-50"
+        >
+          {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save size={16} />}
+          {saving ? "Menyimpan..." : "Simpan Pengaturan"}
+        </button>
+      </form>
     </div>
   );
 }
