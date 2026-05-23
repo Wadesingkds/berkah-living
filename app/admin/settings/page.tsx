@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { ChevronRight, FileText, Bot, Bell, ShoppingCart, Settings, Users, LogOut } from "lucide-react";
 
@@ -10,7 +11,7 @@ const menuItems = [
   { label: "Retention & Followup", icon: Bell, href: "#" },
   { label: "Daftar Belanja Supplier", icon: ShoppingCart, href: "#" },
   { label: "Pre-order", icon: ShoppingCart, href: "#" },
-  { label: "Pengaturan Toko", icon: Settings, href: "#" },
+  { label: "Pengaturan Toko", icon: Settings, href: "/admin/settings/store" },
   { label: "Admin & Akses", icon: Users, href: "#" },
 ];
 
@@ -21,8 +22,10 @@ export default function SettingsPage() {
       <div className="space-y-2">
         {menuItems.map((item) => {
           const Icon = item.icon;
-          return (
-            <Card key={item.label} className="cursor-pointer hover:bg-muted/50">
+          const isActive = item.href !== "#";
+          
+          const cardContent = (
+            <Card key={item.label} className={`${isActive ? "cursor-pointer hover:bg-muted/50" : "opacity-50 cursor-not-allowed"}`}>
               <CardContent className="p-3 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -33,6 +36,14 @@ export default function SettingsPage() {
                 <ChevronRight size={16} className="text-muted-foreground" />
               </CardContent>
             </Card>
+          );
+
+          return isActive ? (
+            <Link key={item.label} href={item.href}>
+              {cardContent}
+            </Link>
+          ) : (
+            cardContent
           );
         })}
       </div>
