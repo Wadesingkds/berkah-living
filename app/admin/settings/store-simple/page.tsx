@@ -19,10 +19,6 @@ export default function StoreSettingsSimplePage() {
     bank_account_name: "",
   });
 
-  useEffect(() => {
-    fetchSettings();
-  }, []);
-
   const fetchSettings = async () => {
     try {
       const response = await fetch("/api/admin/settings/store");
@@ -30,8 +26,8 @@ export default function StoreSettingsSimplePage() {
         const data = await response.json();
         setSettings(data);
       }
-    } catch (error) {
-      console.error("Error fetching settings:", error);
+    } catch (err) {
+      console.error("Error fetching settings:", err);
     } finally {
       setLoading(false);
     }
@@ -51,12 +47,16 @@ export default function StoreSettingsSimplePage() {
       } else {
         alert("Gagal menyimpan pengaturan toko");
       }
-    } catch (error) {
+    } catch (err) {
       alert("Gagal menyimpan pengaturan toko");
     } finally {
       setSaving(false);
     }
   };
+
+  useEffect(() => {
+    fetchSettings();
+  }, []);
 
   if (loading) {
     return (
