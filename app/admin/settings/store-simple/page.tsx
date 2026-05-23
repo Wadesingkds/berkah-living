@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { ArrowLeft, Save, Loader2 } from "lucide-react";
+import { saveStoreSettings } from "./actions";
 
 interface StoreSettings {
   store_name: string;
@@ -16,7 +17,6 @@ interface StoreSettings {
 
 export default function StoreSettingsSimplePage() {
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
   const [settings, setSettings] = useState<StoreSettings>({
     store_name: "",
     store_phone: "",
@@ -44,10 +44,7 @@ export default function StoreSettingsSimplePage() {
         });
         setLoading(false);
       })
-      .catch((err) => {
-        console.error("Error:", err);
-        setLoading(false);
-      });
+      .catch(() => setLoading(false));
   }, []);
 
   const handleChange = (
@@ -55,28 +52,6 @@ export default function StoreSettingsSimplePage() {
     value: string
   ) => {
     setSettings((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleSave = async () => {
-    setSaving(true);
-    try {
-      const res = await fetch("/api/admin/settings/store", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(settings),
-      });
-
-      if (res.ok) {
-        alert("Berhasil disimpan!");
-        window.location.href = "/admin/settings";
-      } else {
-        alert("Gagal disimpan");
-      }
-    } catch (e) {
-      alert("Error: " + String(e));
-    } finally {
-      setSaving(false);
-    }
   };
 
   if (loading) {
@@ -99,11 +74,12 @@ export default function StoreSettingsSimplePage() {
         <h1 className="text-lg font-bold">Pengaturan Toko</h1>
       </div>
 
-      <div className="space-y-4">
+      <form action={saveStoreSettings} className="space-y-4">
         <div>
           <label className="block text-sm font-medium mb-1">Nama Toko</label>
           <input
             type="text"
+            name="store_name"
             value={settings.store_name}
             onChange={(e) => handleChange("store_name", e.target.value)}
             className="w-full p-2 border rounded-lg"
@@ -114,6 +90,7 @@ export default function StoreSettingsSimplePage() {
           <label className="block text-sm font-medium mb-1">Nomor Telepon</label>
           <input
             type="text"
+            name="store_phone"
             value={settings.store_phone}
             onChange={(e) => handleChange("store_phone", e.target.value)}
             className="w-full p-2 border rounded-lg"
@@ -124,6 +101,7 @@ export default function StoreSettingsSimplePage() {
           <label className="block text-sm font-medium mb-1">Email</label>
           <input
             type="email"
+            name="store_email"
             value={settings.store_email}
             onChange={(e) => handleChange("store_email", e.target.value)}
             className="w-full p-2 border rounded-lg"
@@ -133,6 +111,7 @@ export default function StoreSettingsSimplePage() {
         <div>
           <label className="block text-sm font-medium mb-1">Alamat Toko</label>
           <textarea
+            name="store_address"
             value={settings.store_address}
             onChange={(e) => handleChange("store_address", e.target.value)}
             className="w-full p-2 border rounded-lg"
@@ -144,6 +123,7 @@ export default function StoreSettingsSimplePage() {
           <label className="block text-sm font-medium mb-1">Nomor WhatsApp</label>
           <input
             type="text"
+            name="whatsapp_number"
             value={settings.whatsapp_number}
             onChange={(e) => handleChange("whatsapp_number", e.target.value)}
             className="w-full p-2 border rounded-lg"
@@ -158,6 +138,7 @@ export default function StoreSettingsSimplePage() {
               <label className="block text-sm font-medium mb-1">Nama Bank</label>
               <input
                 type="text"
+                name="bank_name"
                 value={settings.bank_name}
                 onChange={(e) => handleChange("bank_name", e.target.value)}
                 className="w-full p-2 border rounded-lg"
@@ -168,6 +149,7 @@ export default function StoreSettingsSimplePage() {
               <label className="block text-sm font-medium mb-1">Nomor Rekening</label>
               <input
                 type="text"
+                name="bank_account_number"
                 value={settings.bank_account_number}
                 onChange={(e) => handleChange("bank_account_number", e.target.value)}
                 className="w-full p-2 border rounded-lg"
@@ -178,6 +160,7 @@ export default function StoreSettingsSimplePage() {
               <label className="block text-sm font-medium mb-1">Nama Pemilik Rekening</label>
               <input
                 type="text"
+                name="bank_account_name"
                 value={settings.bank_account_name}
                 onChange={(e) => handleChange("bank_account_name", e.target.value)}
                 className="w-full p-2 border rounded-lg"
@@ -185,16 +168,15 @@ export default function StoreSettingsSimplePage() {
             </div>
           </div>
         </div>
-      </div>
 
-      <button
-        onClick={handleSave}
-        disabled={saving}
-        className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium flex items-center justify-center gap-2 disabled:opacity-50"
-      >
-        {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save size={16} />}
-        {saving ? "Menyimpan..." : "Simpan Pengaturan"}
-      </button>
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium flex items-center justify-center gap-2"
+        >
+          <Save size={16} />
+          Simpan Pengaturan
+        </button>
+      </form>
     </div>
   );
 }
