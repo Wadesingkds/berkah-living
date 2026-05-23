@@ -31,6 +31,76 @@ export default function OrdersPage() {
   const [activeTab, setActiveTab] = useState("Semua");
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<typeof mockOrders[0] | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleApprove = async () => {
+    if (!selected) return;
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/orders/${selected.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'PAID' }),
+      });
+      if (res.ok) {
+        const updated = await res.json();
+        setSelected({ ...selected, status: 'PAID' });
+        alert('Order approved');
+      } else {
+        alert('Failed to approve order');
+      }
+    } catch (error) {
+      alert('Error: ' + (error as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCancel = async () => {
+    if (!selected) return;
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/orders/${selected.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'CANCELLED' }),
+      });
+      if (res.ok) {
+        setSelected(null);
+        alert('Order cancelled');
+      } else {
+        alert('Failed to cancel order');
+      }
+    } catch (error) {
+      alert('Error: ' + (error as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAssignDriver = async () => {
+    if (!selected) return;
+    const driverId = prompt('Enter driver ID:');
+    if (!driverId) return;
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/orders/${selected.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'DELIVERED', driver_id: driverId }),
+      });
+      if (res.ok) {
+        setSelected({ ...selected, status: 'DELIVERED' });
+        alert('Driver assigned');
+      } else {
+        alert('Failed to assign driver');
+      }
+    } catch (error) {
+      alert('Error: ' + (error as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const filtered = mockOrders.filter((o) => {
     if (activeTab === "Perlu Approval") return o.status === "PENDING";
@@ -132,12 +202,35 @@ export default function OrdersPage() {
 
               <div className="flex gap-2 pt-2">
                 {selected.status === "PENDING" && (
-                  <Button className="flex-1" size="sm"><CheckCircle size={14} className="mr-1" /> Approve</Button>
+                  <Button 
+                    className="flex-1" 
+                    size="sm" 
+                    onClick={handleApprove}
+                    disabled={loading}
+                  >
+                    <CheckCircle size={14} className="mr-1" /> {loading ? 'Processing...' : 'Approve'}
+                  </Button>
                 )}
                 {selected.status === "PAID" && (
-                  <Button className="flex-1" size="sm" variant="secondary"><Truck size={14} className="mr-1" /> Assign Driver</Button>
+                  <Button 
+                    className="flex-1" 
+                    size="sm" 
+                    variant="secondary"
+                    onClick={handleAssignDriver}
+                    disabled={loading}
+                  >
+                    <Truck size={14} className="mr-1" /> {loading ? 'Processing...' : 'Assign Driver'}
+                  </Button>
                 )}
-                <Button variant="outline" size="sm" className="flex-1"><XCircle size={14} className="mr-1" /> Batalkan</Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="flex-1"
+                  onClick={handleCancel}
+                  disabled={loading}
+                >
+                  <XCircle size={14} className="mr-1" /> {loading ? 'Processing...' : 'Batalkan'}
+                </Button>
               </div>
             </div>
           )}
