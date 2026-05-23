@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -47,6 +47,28 @@ export default function OrdersPage() {
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<MockOrder | null>(null);
   const [loading, setLoading] = useState(false);
+  const [orders, setOrders] = useState<MockOrder[]>(mockOrders);
+  const [fetching, setFetching] = useState(false);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      setFetching(true);
+      try {
+        const res = await fetch('/api/orders');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.length > 0) {
+            setOrders(data);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch orders:', error);
+      } finally {
+        setFetching(false);
+      }
+    };
+    fetchOrders();
+  }, []);
 
   const handleApprove = async () => {
     if (!selected) return;
@@ -117,7 +139,7 @@ export default function OrdersPage() {
     }
   };
 
-  const filtered = mockOrders.filter((o) => {
+  const filtered = orders.filter((o) => {
     if (activeTab === "Perlu Approval") return o.status === "PENDING";
     if (activeTab === "Sudah Dibayar") return o.status === "PAID";
     if (activeTab === "Selesai") return o.status === "DONE";
