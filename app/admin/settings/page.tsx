@@ -12,7 +12,7 @@ const menuItems = [
   { label: "Daftar Belanja Supplier", icon: ShoppingCart, href: "#" },
   { label: "Pre-order", icon: ShoppingCart, href: "#" },
   { label: "Pengaturan Toko", icon: Settings, href: "/admin/settings/store-simple" },
-  { label: "Admin & Akses", icon: Users, href: "#" },
+  { label: "Admin & Akses", icon: Users, href: "/admin/settings/admin-access" },
 ];
 
 export default function SettingsPage() {
