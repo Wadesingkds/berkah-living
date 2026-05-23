@@ -36,24 +36,29 @@ export default function StoreSettingsSimplePage() {
   const handleSave = async () => {
     setSaving(true);
     try {
+      console.log("Sending data:", settings);
       const response = await fetch("/api/admin/settings/store", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(settings),
       });
 
+      console.log("Response status:", response.status, "ok:", response.ok);
       const data = await response.json();
-      console.log("Save response:", response.status, data);
+      console.log("Response data:", data);
 
       if (response.ok) {
+        console.log("Success! Redirecting...");
         // Redirect pakai window.location karena router.push kadang issue
-        window.location.href = "/admin/settings";
+        setTimeout(() => {
+          window.location.href = "/admin/settings";
+        }, 500);
       } else {
         alert("Gagal menyimpan: " + (data.error || "Unknown error"));
       }
     } catch (err) {
       console.error("Save error:", err);
-      alert("Gagal menyimpan pengaturan toko");
+      alert("Gagal menyimpan pengaturan toko: " + err.message);
     } finally {
       setSaving(false);
     }
