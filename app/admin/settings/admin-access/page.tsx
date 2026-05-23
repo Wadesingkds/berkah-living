@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 
 interface Admin {
@@ -13,20 +13,27 @@ interface Admin {
   created_at: string
 }
 
+interface FormData {
+  name: string
+  email: string
+  phone: string
+  role: 'owner' | 'admin' | 'staff'
+}
+
 export default function AdminAccessPage() {
   const [admins, setAdmins] = useState<Admin[]>([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
   const [error, setError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [formData, setFormData] = useState<FormData>({
+    name: '',
+    email: '',
+    phone: '',
+    role: 'staff',
+  })
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchAdmins()
-    }, 100)
-    return () => clearTimeout(timer)
-  }, [])
-
-  const fetchAdmins = async () => {
+  const fetchAdmins = useCallback(async () => {
     try {
       setLoading(true)
       const res = await fetch('/api/admin/access')
@@ -38,21 +45,52 @@ export default function AdminAccessPage() {
     } finally {
       setLoading(false)
     }
+  }, [])
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchAdmins()
+    }, 0)
+    return () => clearTimeout(timer)
+  }, [fetchAdmins])
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setSubmitting(true)
+    setError('')
+
+    try {
+      const res = await fetch('/api/admin/access', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      })
+
+      if (!res.ok) {
+        const err = await res.json()
+        throw new Error(err.error || 'Gagal menyimpan admin')
+      }
+
+      setShowForm(false)
+      setFormData({ name: '', email: '', phone: '', role: 'staff' })
+      await fetchAdmins()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error menyimpan admin')
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   const handleCancel = () => {
     setShowForm(false)
+    setFormData({ name: '', email: '', phone: '', role: 'staff' })
     setError('')
   }
 
   const handleDelete = async (id: string) => {
     if (!confirm('Yakin hapus admin ini?')) return
-
     try {
-      const res = await fetch(`/api/admin/access/${id}`, {
-        method: 'DELETE',
-      })
-
+      const res = await fetch(`/api/admin/access/${id}`, { method: 'DELETE' })
       if (!res.ok) throw new Error('Failed to delete admin')
       await fetchAdmins()
     } catch (err) {
@@ -68,7 +106,6 @@ export default function AdminAccessPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus }),
       })
-
       if (!res.ok) throw new Error('Failed to update status')
       await fetchAdmins()
     } catch (err) {
@@ -101,6 +138,7 @@ export default function AdminAccessPage() {
         {/* Add Button */}
         {!showForm && (
           <button
+            type="button"
             onClick={() => setShowForm(true)}
             className="mb-6 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
           >
@@ -108,20 +146,21 @@ export default function AdminAccessPage() {
           </button>
         )}
 
-        {/* Form - Native HTML */}
+        {/* Form — React controlled */}
         {showForm && (
           <div className="mb-6 p-6 bg-white rounded-lg border border-gray-200">
             <h2 className="text-xl font-bold mb-4">Tambah Admin Baru</h2>
-            <form action="/api/admin/access" method="POST" className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Nama
                 </label>
                 <input
                   type="text"
-                  name="name"
+                  value={formData.name}
+                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg"
                   placeholder="Nama lengkap"
                 />
               </div>
@@ -132,9 +171,10 @@ export default function AdminAccessPage() {
                 </label>
                 <input
                   type="email"
-                  name="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg"
                   placeholder="email@example.com"
                 />
               </div>
@@ -145,9 +185,10 @@ export default function AdminAccessPage() {
                 </label>
                 <input
                   type="tel"
-                  name="phone"
+                  value={formData.phone}
+                  onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg"
                   placeholder="08123456789"
                 />
               </div>
@@ -157,8 +198,9 @@ export default function AdminAccessPage() {
                   Role
                 </label>
                 <select
-                  name="role"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={formData.role}
+                  onChange={(e) => setFormData(prev => ({ ...prev, role: e.target.value as FormData['role'] }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg"
                 >
                   <option value="staff">Staff</option>
                   <option value="admin">Admin</option>
@@ -169,14 +211,16 @@ export default function AdminAccessPage() {
               <div className="flex gap-2 pt-4">
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
+                  disabled={submitting}
+                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg disabled:opacity-50"
                 >
-                  Simpan
+                  {submitting ? 'Menyimpan...' : 'Simpan'}
                 </button>
                 <button
                   type="button"
                   onClick={handleCancel}
-                  className="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 font-medium"
+                  disabled={submitting}
+                  className="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg"
                 >
                   Batal
                 </button>
@@ -190,67 +234,54 @@ export default function AdminAccessPage() {
           <div className="text-center py-8 text-gray-600">Loading...</div>
         )}
 
+        {/* Empty state */}
+        {!loading && admins.length === 0 && (
+          <div className="text-center py-8 text-gray-500">
+            Belum ada admin. Tambahkan admin pertama.
+          </div>
+        )}
+
         {/* Admin List */}
         {!loading && admins.length > 0 && (
           <div className="space-y-3">
             {admins.map((admin) => (
               <div
                 key={admin.id}
-                className="p-4 bg-white rounded-lg border border-gray-200 flex items-center justify-between"
+                className="p-4 bg-white rounded-lg border border-gray-200"
               >
-                <div className="flex-1">
-                  <h3 className="font-semibold text-gray-900">{admin.name}</h3>
-                  <p className="text-sm text-gray-600">{admin.email}</p>
-                  <p className="text-sm text-gray-600">{admin.phone}</p>
-                  <div className="mt-2 flex gap-2">
-                    <span className="inline-block px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded font-medium">
-                      {admin.role}
-                    </span>
-                    <span
-                      className={`inline-block px-2 py-1 text-xs rounded font-medium ${
-                        admin.status === 'active'
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-gray-100 text-gray-700'
-                      }`}
-                    >
-                      {admin.status}
-                    </span>
-                  </div>
+                <h3 className="font-semibold">{admin.name}</h3>
+                <p className="text-sm text-gray-600">{admin.email}</p>
+                <p className="text-sm text-gray-600">{admin.phone}</p>
+                <div className="mt-2 flex gap-2">
+                  <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">
+                    {admin.role}
+                  </span>
+                  <span className={`px-2 py-1 text-xs rounded ${
+                    admin.status === 'active'
+                      ? 'bg-green-100 text-green-700'
+                      : 'bg-gray-100 text-gray-700'
+                  }`}>
+                    {admin.status}
+                  </span>
                 </div>
-
-                <div className="flex gap-2">
+                <div className="mt-2 flex gap-2">
                   <button
+                    type="button"
                     onClick={() => handleToggleStatus(admin)}
-                    className={`px-3 py-1 rounded text-sm font-medium ${
-                      admin.status === 'active'
-                        ? 'bg-yellow-100 text-yellow-600 hover:bg-yellow-200'
-                        : 'bg-green-100 text-green-600 hover:bg-green-200'
-                    }`}
+                    className="px-3 py-1 text-sm bg-gray-100 rounded"
                   >
                     {admin.status === 'active' ? 'Nonaktifkan' : 'Aktifkan'}
                   </button>
                   <button
+                    type="button"
                     onClick={() => handleDelete(admin.id)}
-                    className="px-3 py-1 bg-red-100 text-red-600 rounded hover:bg-red-200 text-sm font-medium"
+                    className="px-3 py-1 bg-red-100 text-red-600 text-sm rounded"
                   >
                     Hapus
                   </button>
                 </div>
               </div>
             ))}
-          </div>
-        )}
-
-        {/* Empty State */}
-        {!loading && admins.length === 0 && (
-          <div className="text-center py-12 text-gray-600">
-            <p className="mb-4">Belum ada admin</p>
-            <button
-              onClick={() => setShowForm(true)}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
-            >
-              Tambah Admin Pertama
-            </button>
           </div>
         )}
       </div>

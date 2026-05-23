@@ -12,9 +12,10 @@ const supabase = createClient(supabaseUrl, supabaseKey)
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params
     const id = params.id
     const body = await request.json()
     const { name, email, phone, role } = body
@@ -59,9 +60,10 @@ export async function PUT(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params
     const id = params.id
     const body = await request.json()
     const { status } = body
@@ -106,9 +108,10 @@ export async function PATCH(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params
     const id = params.id
 
     const { error } = await supabase
