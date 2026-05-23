@@ -189,7 +189,8 @@ export default function StoreSettingsSimplePage() {
         </div>
 
         <button
-          type="submit"
+          type="button"
+          onClick={handleSave}
           disabled={saving}
           className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium flex items-center justify-center gap-2 disabled:opacity-50"
         >
