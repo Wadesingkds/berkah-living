@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { Save, Upload, X, AlertCircle } from 'lucide-react'
 
@@ -37,7 +37,7 @@ export default function ProductFormPage() {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
 
-  const fetchProduct = async () => {
+  const fetchProduct = useCallback(async () => {
     try {
       setLoading(true)
       const res = await fetch(`/api/admin/products/${productId}`)
@@ -53,19 +53,18 @@ export default function ProductFormPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [productId])
 
   useEffect(() => {
     if (!isNew) {
       fetchProduct()
     }
-  }, [productId, isNew])
+  }, [isNew, fetchProduct])
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
     if (!files) return
 
-    // Validate file size (max 5MB per file)
     const maxSize = 5 * 1024 * 1024
     for (let i = 0; i < files.length; i++) {
       if (files[i].size > maxSize) {
@@ -120,7 +119,6 @@ export default function ProductFormPage() {
     setError('')
     setSuccess('')
 
-    // Validation
     if (!product.name?.trim()) {
       setError('Nama produk wajib diisi')
       return
@@ -177,7 +175,6 @@ export default function ProductFormPage() {
         {isNew ? 'Tambah Produk Baru' : 'Edit Produk'}
       </h1>
 
-      {/* Error Alert */}
       {error && (
         <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex gap-3">
           <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
@@ -185,7 +182,6 @@ export default function ProductFormPage() {
         </div>
       )}
 
-      {/* Success Alert */}
       {success && (
         <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800">
           {success}
@@ -193,7 +189,6 @@ export default function ProductFormPage() {
       )}
 
       <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-6 space-y-6">
-        {/* Nama Produk */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Nama Produk *
@@ -207,7 +202,6 @@ export default function ProductFormPage() {
           />
         </div>
 
-        {/* Deskripsi */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Deskripsi
@@ -221,7 +215,6 @@ export default function ProductFormPage() {
           />
         </div>
 
-        {/* Kategori */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Kategori *
@@ -238,7 +231,6 @@ export default function ProductFormPage() {
           </select>
         </div>
 
-        {/* Harga */}
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -266,7 +258,6 @@ export default function ProductFormPage() {
           </div>
         </div>
 
-        {/* Upload Foto */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Foto Produk * (Min 1 foto)
@@ -293,7 +284,6 @@ export default function ProductFormPage() {
             </label>
           </div>
 
-          {/* Image Preview */}
           {product.images && product.images.length > 0 && (
             <div className="mt-4">
               <p className="text-sm font-medium text-gray-700 mb-3">
@@ -322,7 +312,6 @@ export default function ProductFormPage() {
           )}
         </div>
 
-        {/* Status */}
         <div>
           <label className="flex items-center gap-3 cursor-pointer">
             <input
@@ -335,7 +324,6 @@ export default function ProductFormPage() {
           </label>
         </div>
 
-        {/* Buttons */}
         <div className="flex gap-3 pt-4 border-t">
           <button
             type="submit"

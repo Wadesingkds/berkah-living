@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { Plus, Edit2, Trash2, Search } from 'lucide-react'
 
@@ -21,7 +21,7 @@ export default function ProductsPage() {
   const [filterCategory, setFilterCategory] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
 
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     try {
       setLoading(true)
       const url = new URL('/api/admin/products', window.location.origin)
@@ -38,11 +38,11 @@ export default function ProductsPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [filterCategory])
 
   useEffect(() => {
     fetchProducts()
-  }, [filterCategory])
+  }, [fetchProducts])
 
   const handleDelete = async (id: string, name: string) => {
     if (!confirm(`Yakin hapus produk "${name}"?`)) return
@@ -85,7 +85,6 @@ export default function ProductsPage() {
         </button>
       </div>
 
-      {/* Filter & Search */}
       <div className="mb-6 space-y-4">
         <div className="flex gap-2 flex-wrap">
           {['all', 'daster', 'parfum', 'aksesoris'].map((cat) => (
@@ -115,7 +114,6 @@ export default function ProductsPage() {
         </div>
       </div>
 
-      {/* Products Table */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
         {filteredProducts.length === 0 ? (
           <div className="p-8 text-center text-gray-500">
