@@ -1,15 +1,15 @@
-import { supabaseServer } from '@/lib/supabase/server';
-import { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server'
+import { supabaseServer } from '@/lib/supabase/server'
 
 export async function POST(request: Request) {
   try {
-    const { product_id, adjustment } = await request.json();
+    const { product_id, adjustment } = await request.json()
 
-    if (!product_id || typeof adjustment !== 'number') {
+    if (!product_id || adjustment === undefined || adjustment === 0) {
       return NextResponse.json(
-        { error: 'product_id dan adjustment diperlukan' },
+        { error: 'Invalid product_id or adjustment' },
         { status: 400 }
-      );
+      )
     }
 
     // Get current stock
@@ -17,45 +17,43 @@ export async function POST(request: Request) {
       .from('products')
       .select('stock')
       .eq('id', product_id)
-      .single();
+      .single()
 
     if (fetchError || !product) {
       return NextResponse.json(
-        { error: 'Produk tidak ditemukan' },
+        { error: 'Product not found' },
         { status: 404 }
-      );
+      )
     }
 
-    const newStock = product.stock + adjustment;
-
-    if (newStock < 0) {
-      return NextResponse.json(
-        { error: 'Stok tidak boleh negatif' },
-        { status: 400 }
-      );
-    }
+    const newStock = Math.max(0, (product.stock || 0) + adjustment)
 
     // Update stock
-    const { data, error: updateError } = await supabaseServer
+    const { error: updateError } = await supabaseServer
       .from('products')
       .update({ stock: newStock })
       .eq('id', product_id)
-      .select()
-      .single();
 
     if (updateError) {
+      console.error('Stock update error:', updateError)
       return NextResponse.json(
-        { error: updateError.message },
+        { error: 'Failed to update stock' },
         { status: 500 }
-      );
+      )
     }
 
-    return NextResponse.json({ success: true, data });
+    return NextResponse.json({
+      success: true,
+      product_id,
+      old_stock: product.stock || 0,
+      new_stock: newStock,
+      adjustment
+    })
   } catch (error) {
-    console.error('Stock adjustment error:', error);
+    console.error('Stock adjustment error:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
-    );
+    )
   }
 }
