@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+
 import { Search, Plus, Phone, MapPin, Truck, CheckCircle, XCircle } from "lucide-react";
 
 const tabs = ["Semua", "Perlu Approval", "Sudah Dibayar", "Selesai"];
@@ -42,6 +43,12 @@ const mockOrders: MockOrder[] = [
   { id: "550e8400-e29b-41d4-a716-446655440004", order_number: "ORD-20260522-0004", customer: { name: "Dedi Pratama", phone: "08456789012" }, total: 150000, status: "DONE", payment_type: "QRIS", items: [{ product: { name: "Ayam Kampung Utuh" }, qty: 1 }], notes: null, created_at: "2026-05-22 07:00" },
 ];
 
+interface Driver {
+  id: string;
+  name: string;
+  phone: string;
+}
+
 export default function OrdersPage() {
   const [activeTab, setActiveTab] = useState("Semua");
   const [search, setSearch] = useState("");
@@ -49,6 +56,8 @@ export default function OrdersPage() {
   const [loading, setLoading] = useState(false);
   const [orders, setOrders] = useState<MockOrder[]>(mockOrders);
   const [fetching, setFetching] = useState(false);
+  const [drivers, setDrivers] = useState<Driver[]>([]);
+  const [selectedDriverId, setSelectedDriverId] = useState<string>("");
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -68,6 +77,21 @@ export default function OrdersPage() {
       }
     };
     fetchOrders();
+  }, []);
+
+  useEffect(() => {
+    const fetchDrivers = async () => {
+      try {
+        const res = await fetch('/api/drivers');
+        if (res.ok) {
+          const data = await res.json();
+          setDrivers(data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch drivers:', error);
+      }
+    };
+    fetchDrivers();
   }, []);
 
   const handleApprove = async () => {
@@ -116,18 +140,17 @@ export default function OrdersPage() {
   };
 
   const handleAssignDriver = async () => {
-    if (!selected) return;
-    const driverId = prompt('Enter driver ID:');
-    if (!driverId) return;
+    if (!selected || !selectedDriverId) return;
     setLoading(true);
     try {
       const res = await fetch(`/api/orders/${selected.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: 'DELIVERED', driver_id: driverId }),
+        body: JSON.stringify({ status: 'DELIVERED', driver_id: selectedDriverId }),
       });
       if (res.ok) {
         setSelected({ ...selected, status: 'DELIVERED' as const });
+        setSelectedDriverId("");
         alert('Driver assigned');
       } else {
         alert('Failed to assign driver');
@@ -240,6 +263,24 @@ export default function OrdersPage() {
                 </div>
               )}
 
+              {selected.status === "PAID" && (
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Pilih Driver</label>
+                  <select
+                    value={selectedDriverId}
+                    onChange={(e) => setSelectedDriverId(e.target.value)}
+                    className="w-full p-2 border rounded-md text-sm"
+                  >
+                    <option value="">Pilih driver...</option>
+                    {drivers.map((driver) => (
+                      <option key={driver.id} value={driver.id}>
+                        {driver.name} - {driver.phone}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
               <div className="flex gap-2 pt-2">
                 {selected.status === "PENDING" && (
                   <Button 
@@ -257,7 +298,7 @@ export default function OrdersPage() {
                     size="sm" 
                     variant="secondary"
                     onClick={handleAssignDriver}
-                    disabled={loading}
+                    disabled={loading || !selectedDriverId}
                   >
                     <Truck size={14} className="mr-1" /> {loading ? 'Processing...' : 'Assign Driver'}
                   </Button>
