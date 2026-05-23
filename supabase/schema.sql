@@ -61,6 +61,7 @@ CREATE TABLE drivers (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
   phone TEXT UNIQUE NOT NULL,
+  type TEXT DEFAULT 'INTERNAL' CHECK (type IN ('INTERNAL', 'GRAB', 'GOJEK')),
   created_at TIMESTAMP DEFAULT now()
 );
 

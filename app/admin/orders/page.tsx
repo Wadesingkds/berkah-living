@@ -47,6 +47,7 @@ interface Driver {
   id: string;
   name: string;
   phone: string;
+  type: 'INTERNAL' | 'GRAB' | 'GOJEK';
 }
 
 export default function OrdersPage() {
@@ -143,15 +144,32 @@ export default function OrdersPage() {
     if (!selected || !selectedDriverId) return;
     setLoading(true);
     try {
+      const driver = drivers.find(d => d.id === selectedDriverId);
+      
       const res = await fetch(`/api/orders/${selected.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: 'DELIVERED', driver_id: selectedDriverId }),
       });
+      
       if (res.ok) {
+        // Send WA notification to internal driver
+        if (driver?.type === 'INTERNAL') {
+          await fetch('/api/wa/send', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              to: driver.phone,
+              message: `🚚 *Order Baru Assigned*\n\nOrder: ${selected.order_number}\nCustomer: ${selected.customer?.name}\nPhone: ${selected.customer?.phone}\nTotal: Rp ${selected.total.toLocaleString('id-ID')}\nNotes: ${selected.notes || '-'}\n\nSilakan pickup dan deliver ke customer.`
+            })
+          });
+        }
+        
         setSelected({ ...selected, status: 'DELIVERED' as const });
         setSelectedDriverId("");
-        alert('Driver assigned');
+        alert(driver?.type === 'INTERNAL' 
+          ? 'Driver assigned & notified via WhatsApp' 
+          : `Driver assigned. Order manual via ${driver?.name} app`);
       } else {
         alert('Failed to assign driver');
       }
@@ -274,10 +292,13 @@ export default function OrdersPage() {
                     <option value="">Pilih driver...</option>
                     {drivers.map((driver) => (
                       <option key={driver.id} value={driver.id}>
-                        {driver.name} - {driver.phone}
+                        {driver.type === 'INTERNAL' ? '👤' : driver.type === 'GRAB' ? '🚗' : '🏍️'} {driver.name} {driver.type !== 'INTERNAL' && `(${driver.type})`}
                       </option>
                     ))}
                   </select>
+                  {selectedDriverId && drivers.find(d => d.id === selectedDriverId)?.type !== 'INTERNAL' && (
+                    <p className="text-xs text-amber-600">⚠️ Order manual via app {drivers.find(d => d.id === selectedDriverId)?.name}</p>
+                  )}
                 </div>
               )}
 
