@@ -42,8 +42,10 @@ export default function StoreSettingsSimplePage() {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("handleSave triggered");
     setSaving(true);
     try {
+      console.log("Sending data to API...");
       const response = await fetch("/api/admin/settings/store", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -59,13 +61,20 @@ export default function StoreSettingsSimplePage() {
         }),
       });
 
+      console.log("Response status:", response.status);
+      const data = await response.json();
+      console.log("Response data:", data);
+
       if (response.ok) {
+        console.log("Success! Redirecting...");
         alert("Pengaturan toko berhasil disimpan!");
         window.location.href = "/admin/settings";
       } else {
-        alert("Gagal menyimpan pengaturan toko");
+        console.log("Error response:", data);
+        alert("Gagal: " + (data.error || "Unknown error"));
       }
     } catch (err) {
+      console.error("Catch error:", err);
       alert("Error: " + (err instanceof Error ? err.message : "Unknown"));
     } finally {
       setSaving(false);
