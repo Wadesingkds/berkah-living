@@ -22,7 +22,7 @@ export default function AdminAccessPage() {
     name: '',
     email: '',
     phone: '',
-    role: 'staff' as const,
+    role: 'staff' as 'owner' | 'admin' | 'staff',
   })
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
