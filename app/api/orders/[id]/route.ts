@@ -2,9 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const params = await context.params;
+    const { id } = params;
+    
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
@@ -13,7 +16,6 @@ export async function PATCH(
     }
 
     const body = await request.json();
-    const { id } = params;
 
     const response = await fetch(`${supabaseUrl}/rest/v1/orders?id=eq.${id}`, {
       method: 'PATCH',
@@ -36,9 +38,10 @@ export async function PATCH(
 
     const data = await response.json();
     return NextResponse.json(data[0]);
-  } catch (error: any) {
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
-      { error: error.message },
+      { error: errorMessage },
       { status: 500 }
     );
   }

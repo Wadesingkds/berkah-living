@@ -20,17 +20,32 @@ const statusColors: Record<string, string> = {
 
 const paymentLabels: Record<string, string> = { QRIS: "QRIS", TRANSFER: "Transfer", COD: "COD" };
 
-const mockOrders = [
-  { id: "1", order_number: "ORD-20260522-0001", customer: { name: "Budi Santoso", phone: "08123456789" }, total: 450000, status: "PENDING" as const, payment_type: "QRIS" as const, items: [{ product: { name: "Ayam Kampung Utuh" }, qty: 2 }, { product: { name: "Daging Sapi Giling" }, qty: 1 }], notes: "Antar pagi ya", created_at: "2026-05-22 08:30" },
-  { id: "2", order_number: "ORD-20260522-0002", customer: { name: "Ani Wulandari", phone: "08234567890" }, total: 280000, status: "PAID" as const, payment_type: "TRANSFER" as const, items: [{ product: { name: "Ayam Kampung Utuh" }, qty: 1 }], notes: null, created_at: "2026-05-22 09:15" },
-  { id: "3", order_number: "ORD-20260522-0003", customer: { name: "Citra Lestari", phone: "08345678901" }, total: 620000, status: "DELIVERED" as const, payment_type: "COD" as const, items: [{ product: { name: "Daging Sapi Giling" }, qty: 2 }, { product: { name: "Ayam Kampung Utuh" }, qty: 1 }], notes: "Rumah warna hijau", created_at: "2026-05-22 10:00" },
-  { id: "4", order_number: "ORD-20260522-0004", customer: { name: "Dedi Pratama", phone: "08456789012" }, total: 150000, status: "DONE" as const, payment_type: "QRIS" as const, items: [{ product: { name: "Ayam Kampung Utuh" }, qty: 1 }], notes: null, created_at: "2026-05-22 07:00" },
+type OrderStatus = 'PENDING' | 'PAID' | 'DELIVERED' | 'DONE' | 'CANCELLED';
+type PaymentType = 'QRIS' | 'TRANSFER' | 'COD';
+
+interface MockOrder {
+  id: string;
+  order_number: string;
+  customer: { name: string; phone: string };
+  total: number;
+  status: OrderStatus;
+  payment_type: PaymentType;
+  items: { product: { name: string }; qty: number }[];
+  notes: string | null;
+  created_at: string;
+}
+
+const mockOrders: MockOrder[] = [
+  { id: "1", order_number: "ORD-20260522-0001", customer: { name: "Budi Santoso", phone: "08123456789" }, total: 450000, status: "PENDING", payment_type: "QRIS", items: [{ product: { name: "Ayam Kampung Utuh" }, qty: 2 }, { product: { name: "Daging Sapi Giling" }, qty: 1 }], notes: "Antar pagi ya", created_at: "2026-05-22 08:30" },
+  { id: "2", order_number: "ORD-20260522-0002", customer: { name: "Ani Wulandari", phone: "08234567890" }, total: 280000, status: "PAID", payment_type: "TRANSFER", items: [{ product: { name: "Ayam Kampung Utuh" }, qty: 1 }], notes: null, created_at: "2026-05-22 09:15" },
+  { id: "3", order_number: "ORD-20260522-0003", customer: { name: "Citra Lestari", phone: "08345678901" }, total: 620000, status: "DELIVERED", payment_type: "COD", items: [{ product: { name: "Daging Sapi Giling" }, qty: 2 }, { product: { name: "Ayam Kampung Utuh" }, qty: 1 }], notes: "Rumah warna hijau", created_at: "2026-05-22 10:00" },
+  { id: "4", order_number: "ORD-20260522-0004", customer: { name: "Dedi Pratama", phone: "08456789012" }, total: 150000, status: "DONE", payment_type: "QRIS", items: [{ product: { name: "Ayam Kampung Utuh" }, qty: 1 }], notes: null, created_at: "2026-05-22 07:00" },
 ];
 
 export default function OrdersPage() {
   const [activeTab, setActiveTab] = useState("Semua");
   const [search, setSearch] = useState("");
-  const [selected, setSelected] = useState<typeof mockOrders[0] | null>(null);
+  const [selected, setSelected] = useState<MockOrder | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handleApprove = async () => {
@@ -44,7 +59,7 @@ export default function OrdersPage() {
       });
       if (res.ok) {
         const updated = await res.json();
-        setSelected({ ...selected, status: 'PAID' });
+        setSelected({ ...selected, status: 'PAID' as const });
         alert('Order approved');
       } else {
         alert('Failed to approve order');
@@ -90,7 +105,7 @@ export default function OrdersPage() {
         body: JSON.stringify({ status: 'DELIVERED', driver_id: driverId }),
       });
       if (res.ok) {
-        setSelected({ ...selected, status: 'DELIVERED' });
+        setSelected({ ...selected, status: 'DELIVERED' as const });
         alert('Driver assigned');
       } else {
         alert('Failed to assign driver');
