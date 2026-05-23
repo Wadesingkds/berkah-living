@@ -33,14 +33,40 @@ interface StoreSettings {
 export default function CatalogPage() {
   const [activeCategory, setActiveCategory] = useState("Semua");
   const [storeSettings, setStoreSettings] = useState<StoreSettings | null>(null);
+  const [isStoreOpen, setIsStoreOpen] = useState(false);
   const { items, addItem, updateQty } = useCartStore();
   const totalItems = items.reduce((sum, i) => sum + i.qty, 0);
 
-  // Fetch store settings
+  // Fetch store settings and calculate if store is open
   useEffect(() => {
     fetch('/api/admin/settings/store')
       .then(res => res.json())
-      .then(data => setStoreSettings(data))
+      .then(data => {
+        setStoreSettings(data);
+        
+        // Calculate if store is open based on current time and opening hours
+        if (data.opening_hours && data.closing_hours) {
+          const now = new Date();
+          const currentTime = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+          
+          // Parse opening and closing times
+          const [openHour, openMinute] = data.opening_hours.split(':').map(Number);
+          const [closeHour, closeMinute] = data.closing_hours.split(':').map(Number);
+          
+          const openTime = openHour * 60 + openMinute;
+          const closeTime = closeHour * 60 + closeMinute;
+          const currentTimeInMinutes = now.getHours() * 60 + now.getMinutes();
+          
+          // Check if current time is within opening hours
+          const isWithinHours = currentTimeInMinutes >= openTime && currentTimeInMinutes <= closeTime;
+          
+          // Store is open if: manual override is_open AND within opening hours
+          setIsStoreOpen(data.is_open && isWithinHours);
+        } else {
+          // Fallback to manual is_open if no hours set
+          setIsStoreOpen(data.is_open);
+        }
+      })
       .catch(err => console.error('Failed to fetch store settings:', err));
   }, []);
 
@@ -59,8 +85,8 @@ export default function CatalogPage() {
             <h1 className="text-lg font-bold">{storeSettings?.store_name || 'Berkah Living'}</h1>
             <p className="text-xs opacity-80">{storeSettings?.store_description || 'Ayam Organik & Daging Segar'}</p>
           </div>
-          <Badge className={storeSettings?.is_open ? "bg-green-400 text-green-900" : "bg-red-400 text-red-900"}>
-            {storeSettings?.is_open ? 'Buka' : 'Tutup'}
+          <Badge className={isStoreOpen ? "bg-green-400 text-green-900" : "bg-red-400 text-red-900"}>
+            {isStoreOpen ? 'Buka' : 'Tutup'}
           </Badge>
         </div>
         <p className="text-xs opacity-70">Jam: {storeSettings?.opening_hours || '06:00'} - {storeSettings?.closing_hours || '18:00'} | {storeSettings?.store_address || 'Kudus, Jateng'}</p>
