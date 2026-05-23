@@ -55,7 +55,10 @@ export default function StoreSettingsSimplePage() {
   };
 
   useEffect(() => {
-    fetchSettings();
+    // Wrap in setTimeout to avoid calling setState synchronously in effect
+    setTimeout(() => {
+      fetchSettings();
+    }, 0);
   }, []);
 
   if (loading) {
