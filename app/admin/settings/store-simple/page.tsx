@@ -40,12 +40,9 @@ export default function StoreSettingsSimplePage() {
     fetchSettings();
   }, []);
 
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("handleSave triggered");
+  const handleSave = async () => {
     setSaving(true);
     try {
-      console.log("Sending data to API...");
       const response = await fetch("/api/admin/settings/store", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -61,20 +58,13 @@ export default function StoreSettingsSimplePage() {
         }),
       });
 
-      console.log("Response status:", response.status);
-      const data = await response.json();
-      console.log("Response data:", data);
-
       if (response.ok) {
-        console.log("Success! Redirecting...");
         alert("Pengaturan toko berhasil disimpan!");
         window.location.href = "/admin/settings";
       } else {
-        console.log("Error response:", data);
-        alert("Gagal: " + (data.error || "Unknown error"));
+        alert("Gagal menyimpan pengaturan toko");
       }
     } catch (err) {
-      console.error("Catch error:", err);
       alert("Error: " + (err instanceof Error ? err.message : "Unknown"));
     } finally {
       setSaving(false);
@@ -101,7 +91,7 @@ export default function StoreSettingsSimplePage() {
         <h1 className="text-lg font-bold">Pengaturan Toko</h1>
       </div>
 
-      <form onSubmit={handleSave} className="space-y-4">
+      <div className="space-y-4">
         <div>
           <label className="block text-sm font-medium mb-1">Nama Toko</label>
           <input
@@ -187,17 +177,16 @@ export default function StoreSettingsSimplePage() {
             </div>
           </div>
         </div>
+      </div>
 
-        <button
-          type="button"
-          onClick={handleSave}
-          disabled={saving}
-          className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium flex items-center justify-center gap-2 disabled:opacity-50"
-        >
-          {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save size={16} />}
-          {saving ? "Menyimpan..." : "Simpan Pengaturan"}
-        </button>
-      </form>
+      <button
+        onClick={handleSave}
+        disabled={saving}
+        className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium flex items-center justify-center gap-2 disabled:opacity-50"
+      >
+        {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save size={16} />}
+        {saving ? "Menyimpan..." : "Simpan Pengaturan"}
+      </button>
     </div>
   );
 }
