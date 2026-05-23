@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -20,10 +20,29 @@ const mockProducts: Product[] = [
   { id: "6", name: "Bawang Merah", price: 35000, stock: 15, minStock: 5, categoryId: "cat4", imageUrl: null, isActive: true, createdAt: new Date().toISOString() },
 ];
 
+interface StoreSettings {
+  id: string;
+  store_name: string;
+  store_description: string;
+  store_address: string;
+  opening_hours: string;
+  closing_hours: string;
+  is_open: boolean;
+}
+
 export default function CatalogPage() {
   const [activeCategory, setActiveCategory] = useState("Semua");
+  const [storeSettings, setStoreSettings] = useState<StoreSettings | null>(null);
   const { items, addItem, updateQty } = useCartStore();
   const totalItems = items.reduce((sum, i) => sum + i.qty, 0);
+
+  // Fetch store settings
+  useEffect(() => {
+    fetch('/api/admin/settings/store')
+      .then(res => res.json())
+      .then(data => setStoreSettings(data))
+      .catch(err => console.error('Failed to fetch store settings:', err));
+  }, []);
 
   const filtered = mockProducts.filter(() => {
     if (activeCategory !== "Semua") return true; // TODO: filter by category_id
@@ -37,12 +56,14 @@ export default function CatalogPage() {
       <div className="bg-primary text-white p-4">
         <div className="flex items-center justify-between mb-2">
           <div>
-            <h1 className="text-lg font-bold">Berkah Living</h1>
-            <p className="text-xs opacity-80">Ayam Organik & Daging Segar</p>
+            <h1 className="text-lg font-bold">{storeSettings?.store_name || 'Berkah Living'}</h1>
+            <p className="text-xs opacity-80">{storeSettings?.store_description || 'Ayam Organik & Daging Segar'}</p>
           </div>
-          <Badge className="bg-green-400 text-green-900">Buka</Badge>
+          <Badge className={storeSettings?.is_open ? "bg-green-400 text-green-900" : "bg-red-400 text-red-900"}>
+            {storeSettings?.is_open ? 'Buka' : 'Tutup'}
+          </Badge>
         </div>
-        <p className="text-xs opacity-70">Jam: 06:00 - 18:00 | Kudus, Jateng</p>
+        <p className="text-xs opacity-70">Jam: {storeSettings?.opening_hours || '06:00'} - {storeSettings?.closing_hours || '18:00'} | {storeSettings?.store_address || 'Kudus, Jateng'}</p>
       </div>
 
       <div className="p-4 space-y-3">
