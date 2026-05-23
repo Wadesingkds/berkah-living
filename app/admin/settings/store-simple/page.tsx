@@ -6,10 +6,14 @@ import { saveStoreSettings } from "./actions";
 
 interface StoreSettings {
   store_name: string;
+  store_description: string;
   store_phone: string;
   store_email: string;
   store_address: string;
+  opening_hours: string;
+  closing_hours: string;
   whatsapp_number: string;
+  is_open: boolean;
   bank_name: string;
   bank_account_number: string;
   bank_account_name: string;
@@ -19,10 +23,14 @@ export default function StoreSettingsSimplePage() {
   const [loading, setLoading] = useState(true);
   const [settings, setSettings] = useState<StoreSettings>({
     store_name: "",
+    store_description: "",
     store_phone: "",
     store_email: "",
     store_address: "",
+    opening_hours: "06:00",
+    closing_hours: "18:00",
     whatsapp_number: "",
+    is_open: true,
     bank_name: "",
     bank_account_number: "",
     bank_account_name: "",
@@ -34,10 +42,14 @@ export default function StoreSettingsSimplePage() {
       .then((data) => {
         setSettings({
           store_name: data.store_name || "",
+          store_description: data.store_description || "",
           store_phone: data.store_phone || "",
           store_email: data.store_email || "",
           store_address: data.store_address || "",
+          opening_hours: data.opening_hours || "06:00",
+          closing_hours: data.closing_hours || "18:00",
           whatsapp_number: data.whatsapp_number || "",
+          is_open: data.is_open !== undefined ? data.is_open : true,
           bank_name: data.bank_name || "",
           bank_account_number: data.bank_account_number || "",
           bank_account_name: data.bank_account_name || "",
@@ -87,6 +99,18 @@ export default function StoreSettingsSimplePage() {
         </div>
 
         <div>
+          <label className="block text-sm font-medium mb-1">Deskripsi Toko</label>
+          <input
+            type="text"
+            name="store_description"
+            value={settings.store_description}
+            onChange={(e) => handleChange("store_description", e.target.value)}
+            className="w-full p-2 border rounded-lg"
+            placeholder="Contoh: Ayam Organik & Daging Segar"
+          />
+        </div>
+
+        <div>
           <label className="block text-sm font-medium mb-1">Nomor Telepon</label>
           <input
             type="text"
@@ -117,6 +141,40 @@ export default function StoreSettingsSimplePage() {
             className="w-full p-2 border rounded-lg"
             rows={3}
           />
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-sm font-medium mb-1">Jam Buka</label>
+            <input
+              type="time"
+              name="opening_hours"
+              value={settings.opening_hours}
+              onChange={(e) => handleChange("opening_hours", e.target.value)}
+              className="w-full p-2 border rounded-lg"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Jam Tutup</label>
+            <input
+              type="time"
+              name="closing_hours"
+              value={settings.closing_hours}
+              onChange={(e) => handleChange("closing_hours", e.target.value)}
+              className="w-full p-2 border rounded-lg"
+            />
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3 p-3 border rounded-lg bg-gray-50">
+          <input
+            type="checkbox"
+            name="is_open"
+            checked={settings.is_open}
+            onChange={(e) => setSettings(prev => ({ ...prev, is_open: e.target.checked }))}
+            className="w-4 h-4"
+          />
+          <label className="text-sm font-medium">Toko Sedang Buka</label>
         </div>
 
         <div>

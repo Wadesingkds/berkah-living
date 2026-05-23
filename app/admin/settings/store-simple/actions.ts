@@ -17,10 +17,14 @@ export async function saveStoreSettings(formData: FormData) {
   try {
     const data = {
       store_name: formData.get("store_name"),
+      store_description: formData.get("store_description"),
       store_phone: formData.get("store_phone"),
       store_email: formData.get("store_email"),
       store_address: formData.get("store_address"),
+      opening_hours: formData.get("opening_hours"),
+      closing_hours: formData.get("closing_hours"),
       whatsapp_number: formData.get("whatsapp_number"),
+      is_open: formData.get("is_open") === "on",
       bank_name: formData.get("bank_name"),
       bank_account_number: formData.get("bank_account_number"),
       bank_account_name: formData.get("bank_account_name"),
