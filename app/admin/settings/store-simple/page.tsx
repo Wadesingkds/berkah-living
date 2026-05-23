@@ -3,81 +3,81 @@
 import { useState, useEffect } from "react";
 import { ArrowLeft, Save, Loader2 } from "lucide-react";
 
+interface StoreSettings {
+  store_name: string;
+  store_phone: string;
+  store_email: string;
+  store_address: string;
+  whatsapp_number: string;
+  bank_name: string;
+  bank_account_number: string;
+  bank_account_name: string;
+}
+
 export default function StoreSettingsSimplePage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [storeName, setStoreName] = useState("");
-  const [storePhone, setStorePhone] = useState("");
-  const [storeEmail, setStoreEmail] = useState("");
-  const [storeAddress, setStoreAddress] = useState("");
-  const [whatsappNumber, setWhatsappNumber] = useState("");
-  const [bankName, setBankName] = useState("");
-  const [bankAccountNumber, setBankAccountNumber] = useState("");
-  const [bankAccountName, setBankAccountName] = useState("");
+  const [settings, setSettings] = useState<StoreSettings>({
+    store_name: "",
+    store_phone: "",
+    store_email: "",
+    store_address: "",
+    whatsapp_number: "",
+    bank_name: "",
+    bank_account_number: "",
+    bank_account_name: "",
+  });
 
   useEffect(() => {
-    const fetchSettings = async () => {
-      try {
-        const response = await fetch("/api/admin/settings/store");
-        if (response.ok) {
-          const data = await response.json();
-          setStoreName(data.store_name || "");
-          setStorePhone(data.store_phone || "");
-          setStoreEmail(data.store_email || "");
-          setStoreAddress(data.store_address || "");
-          setWhatsappNumber(data.whatsapp_number || "");
-          setBankName(data.bank_name || "");
-          setBankAccountNumber(data.bank_account_number || "");
-          setBankAccountName(data.bank_account_name || "");
-        }
-      } catch (err) {
-        console.error("Error fetching settings:", err);
-      } finally {
+    fetch("/api/admin/settings/store")
+      .then((r) => r.json())
+      .then((data) => {
+        setSettings({
+          store_name: data.store_name || "",
+          store_phone: data.store_phone || "",
+          store_email: data.store_email || "",
+          store_address: data.store_address || "",
+          whatsapp_number: data.whatsapp_number || "",
+          bank_name: data.bank_name || "",
+          bank_account_number: data.bank_account_number || "",
+          bank_account_name: data.bank_account_name || "",
+        });
         setLoading(false);
-      }
-    };
-
-    fetchSettings();
+      })
+      .catch((err) => {
+        console.error("Error:", err);
+        setLoading(false);
+      });
   }, []);
 
-  useEffect(() => {
-    const btn = document.getElementById("save-btn");
-    if (btn) {
-      const handleClick = async () => {
-        setSaving(true);
-        try {
-          const response = await fetch("/api/admin/settings/store", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              store_name: storeName,
-              store_phone: storePhone,
-              store_email: storeEmail,
-              store_address: storeAddress,
-              whatsapp_number: whatsappNumber,
-              bank_name: bankName,
-              bank_account_number: bankAccountNumber,
-              bank_account_name: bankAccountName,
-            }),
-          });
+  const handleChange = (
+    field: keyof StoreSettings,
+    value: string
+  ) => {
+    setSettings((prev) => ({ ...prev, [field]: value }));
+  };
 
-          if (response.ok) {
-            alert("Pengaturan toko berhasil disimpan!");
-            window.location.href = "/admin/settings";
-          } else {
-            alert("Gagal menyimpan pengaturan toko");
-          }
-        } catch (err) {
-          alert("Error: " + (err instanceof Error ? err.message : "Unknown"));
-        } finally {
-          setSaving(false);
-        }
-      };
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      const res = await fetch("/api/admin/settings/store", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(settings),
+      });
 
-      btn.addEventListener("click", handleClick);
-      return () => btn.removeEventListener("click", handleClick);
+      if (res.ok) {
+        alert("Berhasil disimpan!");
+        window.location.href = "/admin/settings";
+      } else {
+        alert("Gagal disimpan");
+      }
+    } catch (e) {
+      alert("Error: " + String(e));
+    } finally {
+      setSaving(false);
     }
-  }, [storeName, storePhone, storeEmail, storeAddress, whatsappNumber, bankName, bankAccountNumber, bankAccountName]);
+  };
 
   if (loading) {
     return (
@@ -104,8 +104,8 @@ export default function StoreSettingsSimplePage() {
           <label className="block text-sm font-medium mb-1">Nama Toko</label>
           <input
             type="text"
-            value={storeName}
-            onChange={(e) => setStoreName(e.target.value)}
+            value={settings.store_name}
+            onChange={(e) => handleChange("store_name", e.target.value)}
             className="w-full p-2 border rounded-lg"
           />
         </div>
@@ -114,8 +114,8 @@ export default function StoreSettingsSimplePage() {
           <label className="block text-sm font-medium mb-1">Nomor Telepon</label>
           <input
             type="text"
-            value={storePhone}
-            onChange={(e) => setStorePhone(e.target.value)}
+            value={settings.store_phone}
+            onChange={(e) => handleChange("store_phone", e.target.value)}
             className="w-full p-2 border rounded-lg"
           />
         </div>
@@ -124,8 +124,8 @@ export default function StoreSettingsSimplePage() {
           <label className="block text-sm font-medium mb-1">Email</label>
           <input
             type="email"
-            value={storeEmail}
-            onChange={(e) => setStoreEmail(e.target.value)}
+            value={settings.store_email}
+            onChange={(e) => handleChange("store_email", e.target.value)}
             className="w-full p-2 border rounded-lg"
           />
         </div>
@@ -133,8 +133,8 @@ export default function StoreSettingsSimplePage() {
         <div>
           <label className="block text-sm font-medium mb-1">Alamat Toko</label>
           <textarea
-            value={storeAddress}
-            onChange={(e) => setStoreAddress(e.target.value)}
+            value={settings.store_address}
+            onChange={(e) => handleChange("store_address", e.target.value)}
             className="w-full p-2 border rounded-lg"
             rows={3}
           />
@@ -144,8 +144,8 @@ export default function StoreSettingsSimplePage() {
           <label className="block text-sm font-medium mb-1">Nomor WhatsApp</label>
           <input
             type="text"
-            value={whatsappNumber}
-            onChange={(e) => setWhatsappNumber(e.target.value)}
+            value={settings.whatsapp_number}
+            onChange={(e) => handleChange("whatsapp_number", e.target.value)}
             className="w-full p-2 border rounded-lg"
           />
         </div>
@@ -158,8 +158,8 @@ export default function StoreSettingsSimplePage() {
               <label className="block text-sm font-medium mb-1">Nama Bank</label>
               <input
                 type="text"
-                value={bankName}
-                onChange={(e) => setBankName(e.target.value)}
+                value={settings.bank_name}
+                onChange={(e) => handleChange("bank_name", e.target.value)}
                 className="w-full p-2 border rounded-lg"
               />
             </div>
@@ -168,8 +168,8 @@ export default function StoreSettingsSimplePage() {
               <label className="block text-sm font-medium mb-1">Nomor Rekening</label>
               <input
                 type="text"
-                value={bankAccountNumber}
-                onChange={(e) => setBankAccountNumber(e.target.value)}
+                value={settings.bank_account_number}
+                onChange={(e) => handleChange("bank_account_number", e.target.value)}
                 className="w-full p-2 border rounded-lg"
               />
             </div>
@@ -178,8 +178,8 @@ export default function StoreSettingsSimplePage() {
               <label className="block text-sm font-medium mb-1">Nama Pemilik Rekening</label>
               <input
                 type="text"
-                value={bankAccountName}
-                onChange={(e) => setBankAccountName(e.target.value)}
+                value={settings.bank_account_name}
+                onChange={(e) => handleChange("bank_account_name", e.target.value)}
                 className="w-full p-2 border rounded-lg"
               />
             </div>
@@ -188,7 +188,7 @@ export default function StoreSettingsSimplePage() {
       </div>
 
       <button
-        id="save-btn"
+        onClick={handleSave}
         disabled={saving}
         className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium flex items-center justify-center gap-2 disabled:opacity-50"
       >
