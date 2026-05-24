@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -73,12 +74,23 @@ export function CatalogClient({ storeSettings, products }: CatalogClientProps) {
       <div className="bg-gradient-to-br from-primary via-primary to-secondary text-white p-6 pb-8">
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
-            <div className="flex items-center gap-2 mb-1">
-              <div className="w-2 h-2 rounded-full bg-secondary animate-pulse"></div>
-              <span className="text-xs font-semibold uppercase tracking-wide opacity-90">LocalHub</span>
+            <div className="flex items-center gap-3 mb-2">
+              <Image 
+                src="/logo-icon.png" 
+                alt="LocalHub" 
+                width={40} 
+                height={40}
+                className="rounded-lg"
+              />
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-bold uppercase tracking-wide">LocalHub</span>
+                  <div className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></div>
+                </div>
+                <h1 className="text-xl font-bold leading-tight mt-0.5">{storeSettings.store_name || 'LocalHub'}</h1>
+              </div>
             </div>
-            <h1 className="text-2xl font-bold leading-tight">{storeSettings.store_name || 'LocalHub'}</h1>
-            <p className="text-sm opacity-90 mt-1">{storeSettings.store_description || 'Ayam Organik & Daging Segar'}</p>
+            <p className="text-sm opacity-90">{storeSettings.store_description || 'Ayam Organik & Daging Segar'}</p>
           </div>
           <Badge className={`${isStoreOpen ? "bg-accent text-white" : "bg-red-500 text-white"} font-semibold px-3 py-1`}>
             {isStoreOpen ? '✓ Buka' : '✕ Tutup'}

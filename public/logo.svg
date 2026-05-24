@@ -1,0 +1,37 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#C0633E;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#D4A041;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Main circle background -->
+  <circle cx="256" cy="256" r="240" fill="url(#bgGradient)"/>
+  
+  <!-- Location pin with house -->
+  <g transform="translate(256, 180)">
+    <!-- Pin shape -->
+    <path d="M0,-80 C-44,-80 -80,-44 -80,0 C-80,44 0,120 0,120 C0,120 80,44 80,0 C80,-44 44,-80 0,-80 Z" 
+          fill="#5C7C58" stroke="#F4E4BC" stroke-width="8"/>
+    
+    <!-- House inside pin -->
+    <g transform="translate(0, -20)">
+      <!-- Roof -->
+      <path d="M-30,0 L0,-25 L30,0 Z" fill="#F4E4BC"/>
+      <!-- Body -->
+      <rect x="-25" y="0" width="50" height="40" fill="#F4E4BC"/>
+      <!-- Door -->
+      <rect x="-8" y="15" width="16" height="25" fill="#C0633E"/>
+      <!-- Window -->
+      <circle cx="0" cy="8" r="4" fill="#D4A041"/>
+    </g>
+  </g>
+  
+  <!-- Text -->
+  <text x="256" y="400" text-anchor="middle" 
+        font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        font-size="64" font-weight="700" fill="#2D3748" letter-spacing="-1">
+    LocalHub
+  </text>
+</svg>
