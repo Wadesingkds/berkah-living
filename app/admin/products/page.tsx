@@ -1,6 +1,9 @@
 import { supabaseServer } from '@/lib/supabase/server'
 import { ProductsClient } from './products-client'
 
+// Disable static generation for this page
+export const dynamic = 'force-dynamic'
+
 interface Category {
   id: string
   name: string
