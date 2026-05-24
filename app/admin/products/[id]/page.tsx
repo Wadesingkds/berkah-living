@@ -284,6 +284,13 @@ export default function ProductFormPage() {
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Foto Produk * (Min 1 foto)
           </label>
+          
+          {(!product.images || product.images.length === 0) && (
+            <div className="mb-3 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800">
+              ⚠️ Upload minimal 1 foto sebelum menyimpan produk
+            </div>
+          )}
+          
           <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition">
             <input
               type="file"
@@ -308,8 +315,8 @@ export default function ProductFormPage() {
 
           {product.images && product.images.length > 0 && (
             <div className="mt-4">
-              <p className="text-sm font-medium text-gray-700 mb-3">
-                Foto ({product.images.length})
+              <p className="text-sm font-medium text-green-700 mb-3 flex items-center gap-2">
+                ✓ Foto ({product.images.length}) - Siap disimpan
               </p>
               <div className="grid grid-cols-4 gap-4">
                 {product.images.map((image, idx) => (
