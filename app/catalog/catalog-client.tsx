@@ -75,9 +75,9 @@ export function CatalogClient({ storeSettings, products }: CatalogClientProps) {
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">
               <div className="w-2 h-2 rounded-full bg-secondary animate-pulse"></div>
-              <span className="text-xs font-semibold uppercase tracking-wide opacity-90">Berkah Living</span>
+              <span className="text-xs font-semibold uppercase tracking-wide opacity-90">LocalHub</span>
             </div>
-            <h1 className="text-2xl font-bold leading-tight">{storeSettings.store_name || 'Berkah Living'}</h1>
+            <h1 className="text-2xl font-bold leading-tight">{storeSettings.store_name || 'LocalHub'}</h1>
             <p className="text-sm opacity-90 mt-1">{storeSettings.store_description || 'Ayam Organik & Daging Segar'}</p>
           </div>
           <Badge className={`${isStoreOpen ? "bg-accent text-white" : "bg-red-500 text-white"} font-semibold px-3 py-1`}>

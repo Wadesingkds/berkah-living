@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
 
     if (!data) {
       return NextResponse.json({
-        store_name: "Berkah Living",
+        store_name: "LocalHub",
         store_description: "",
         store_phone: "08123456789",
         store_email: "berkah@example.com",

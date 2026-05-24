@@ -5,7 +5,7 @@ Jalankan SQL ini di Supabase dashboard untuk setup tabel products dengan kategor
 ## 1. Buka Supabase Dashboard
 
 - Buka https://supabase.com/dashboard
-- Pilih project Berkah Living
+- Pilih project LocalHub
 - Klik "SQL Editor" di sidebar kiri
 - Klik "New Query"
 

@@ -29,7 +29,7 @@
 
 ### B. Deploy ke Vercel
 ```bash
-cd /home/ubuntu/berkah-living
+cd /home/ubuntu/localhub
 git add -A
 git commit -m "feat: product management with category & image upload"
 git push origin main

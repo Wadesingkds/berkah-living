@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Setup Vercel environment variables for Berkah Living project
+Setup Vercel environment variables for LocalHub project
 Usage: python3 setup-vercel-env.py <VERCEL_TOKEN>
 """
 

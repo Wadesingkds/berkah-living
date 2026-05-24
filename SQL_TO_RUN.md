@@ -4,7 +4,7 @@
 
 ## Langkah:
 1. Buka https://supabase.com/dashboard
-2. Pilih project "Kiosk" (Berkah Living)
+2. Pilih project "Kiosk" (LocalHub)
 3. Klik "SQL Editor" di sidebar
 4. Klik "New Query"
 5. Copy-paste SQL di bawah

@@ -12,7 +12,7 @@ async function updateStoreSettings() {
   const { data, error } = await supabase
     .from('store_settings')
     .update({
-      store_name: 'Berkah Living',
+      store_name: 'LocalHub',
       store_description: 'Ayam Organik & Daging Segar',
       store_address: 'Kudus, Jawa Tengah',
       opening_hours: '06:00',

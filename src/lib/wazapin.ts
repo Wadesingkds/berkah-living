@@ -87,7 +87,7 @@ export async function sendOrderConfirmation(
 
   const message = `Halo ${customerName}! 👋
 
-Terima kasih atas pesanan Anda di Berkah Living.
+Terima kasih atas pesanan Anda di LocalHub.
 
 *Detail Pesanan:*
 ${itemsList}

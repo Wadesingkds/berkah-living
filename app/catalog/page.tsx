@@ -17,7 +17,7 @@ async function getStoreSettings() {
       // Return default settings if no store settings found
       return {
         id: "default",
-        store_name: "Berkah Living",
+        store_name: "LocalHub",
         store_description: "Ayam Organik & Daging Segar",
         store_address: "Kudus, Jawa Tengah",
         opening_hours: "06:00",

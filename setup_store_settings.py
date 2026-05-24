@@ -29,7 +29,7 @@ supabase: Client = create_client(url, service_key)
 # Test data to insert
 test_data = {
     "store_id": "f0839015-e921-41f2-9a9e-0984029054ce",
-    "store_name": "Berkah Living",
+    "store_name": "LocalHub",
     "store_phone": "08123456789",
     "store_email": "berkah@example.com",
     "store_address": "Jl. Contoh No. 123, Kudus, Jawa Tengah",

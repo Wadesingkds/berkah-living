@@ -64,7 +64,7 @@ export const useCartStore = create<CartStore>()(
       }
     }),
     {
-      name: 'berkah-living-cart'
+      name: 'localhub-cart'
     }
   )
 )

@@ -1,4 +1,4 @@
-# BERKAH LIVING — DEBUGGING REPORT
+# LOCALHUB — DEBUGGING REPORT
 
 ## 📋 Ringkasan
 
@@ -483,5 +483,5 @@ export async function DELETE(
 ---
 
 *Document generated: 2024-05-23*
-*Project: berkah-living*
+*Project: localhub*
 *Platform: Vercel + Next.js 15.5.18*

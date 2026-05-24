@@ -37,7 +37,7 @@
 ## Cara Akses
 
 ### 1. Jalankan SQL di Supabase
-Buka file `/home/ubuntu/berkah-living/PRODUCT_SETUP.md` dan copy SQL script ke Supabase SQL Editor.
+Buka file `/home/ubuntu/localhub/PRODUCT_SETUP.md` dan copy SQL script ke Supabase SQL Editor.
 
 SQL akan:
 - Tambah kolom `category` ke tabel `products`
@@ -46,7 +46,7 @@ SQL akan:
 
 ### 2. Test Lokal
 ```bash
-cd /home/ubuntu/berkah-living
+cd /home/ubuntu/localhub
 npm run dev
 ```
 

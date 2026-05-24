@@ -30,7 +30,7 @@ export async function POST(request) {
       
       finalMessage = `Halo ${customerName}! 👋
 
-Terima kasih atas pesanan Anda di Berkah Living.
+Terima kasih atas pesanan Anda di LocalHub.
 
 *Detail Pesanan:*
 ${itemsList}

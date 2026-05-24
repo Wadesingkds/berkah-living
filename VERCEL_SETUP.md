@@ -1,4 +1,4 @@
-# Vercel Setup untuk Berkah Living
+# Vercel Setup untuk LocalHub
 
 ## Project ID
 - **Project ID Baru**: `prj_MtKThWCYedveFtbGQTQ5fnUGh4ab`
@@ -21,7 +21,7 @@ NEXT_PUBLIC_STORE_ID=f0839015-e921-41f2-9a9e-0984029054ce
 ## Langkah Setup
 
 1. Login ke https://vercel.com/dashboard
-2. Pilih project **berkah-living** (prj_MtKThWCYedveFtbGQTQ5fnUGh4ab)
+2. Pilih project **localhub** (prj_MtKThWCYedveFtbGQTQ5fnUGh4ab)
 3. Buka **Settings** → **Environment Variables**
 4. Tambahkan semua variable di atas
 5. Redeploy dengan klik "Redeploy" atau push ke main branch
