@@ -1,6 +1,9 @@
 import { supabaseServer } from "@/lib/supabase/server";
 import { CatalogClient } from "./catalog-client";
 
+// Revalidate every 60 seconds to fetch fresh store settings
+export const revalidate = 60;
+
 async function getStoreSettings() {
   try {
     const { data, error } = await supabaseServer
@@ -32,7 +35,7 @@ async function getStoreSettings() {
     // Return default settings on error
     return {
       id: "default",
-      store_name: "Berkah Living",
+      store_name: "LocalHub",
       store_description: "Ayam Organik & Daging Segar",
       store_address: "Kudus, Jawa Tengah",
       opening_hours: "06:00",
