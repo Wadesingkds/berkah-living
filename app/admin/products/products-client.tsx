@@ -25,9 +25,9 @@ interface ProductsClientProps {
   categories: Category[]
 }
 
-export function ProductsClient({ initialProducts, categories }: ProductsClientProps) {
+export function ProductsClient({ initialProducts = [], categories = [] }: ProductsClientProps) {
   const router = useRouter()
-  const [products, setProducts] = useState<Product[]>(initialProducts)
+  const [products, setProducts] = useState<Product[]>(initialProducts || [])
   const [filterCategoryId, setFilterCategoryId] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -47,7 +47,7 @@ export function ProductsClient({ initialProducts, categories }: ProductsClientPr
     }
   }
 
-  const filteredProducts = products.filter(p => {
+  const filteredProducts = (products || []).filter(p => {
     const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesCategory = filterCategoryId === 'all' || p.category_id === filterCategoryId
     return matchesSearch && matchesCategory
