@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,6 +8,7 @@ import { useCartStore } from "@/stores/cart";
 import { ShoppingCart, Package, Minus, Plus } from "lucide-react";
 import Link from "next/link";
 import { Product } from "@/types";
+import { LocalHubWordmark } from "@/components/LocalHubWordmark";
 
 interface StoreSettings {
   id: string;
@@ -74,14 +74,8 @@ export function CatalogClient({ storeSettings, products }: CatalogClientProps) {
       <div className="bg-gradient-to-br from-primary via-primary to-secondary text-white p-6 pb-8">
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
-            <div className="flex items-center gap-3 mb-2">
-              <Image 
-                src="/logo-wordmark.png" 
-                alt="LocalHub" 
-                width={200} 
-                height={60}
-                className="h-auto"
-              />
+            <div className="mb-3">
+              <LocalHubWordmark />
             </div>
             <p className="text-sm opacity-90">{storeSettings.store_description || 'Ayam Organik & Daging Segar'}</p>
           </div>

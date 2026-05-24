@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LocalHub Wordmark</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    
+    .wordmark {
+      font-size: 96px;
+      font-weight: 700;
+      letter-spacing: -2px;
+      line-height: 1;
+      display: flex;
+      align-items: baseline;
+      user-select: none;
+    }
+    
+    .local {
+      color: #1F2A37;
+    }
+    
+    .hub {
+      color: #B85C38;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .wordmark {
+        font-size: 64px;
+        letter-spacing: -1.5px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .wordmark {
+        font-size: 48px;
+        letter-spacing: -1px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wordmark">
+    <span class="local">Local</span><span class="hub">Hub</span>
+  </div>
+</body>
+</html>
