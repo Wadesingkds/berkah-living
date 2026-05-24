@@ -58,14 +58,14 @@ async function getCategories() {
 export default async function ProductsPage() {
   // Parallel fetch - both requests run simultaneously
   const [products, categories] = await Promise.all([
-    getProducts(),
-    getCategories(),
+    getProducts().catch(() => []),
+    getCategories().catch(() => []),
   ])
 
   return (
     <ProductsClient
-      initialProducts={products}
-      categories={categories}
+      initialProducts={products || []}
+      categories={categories || []}
     />
   )
 }
