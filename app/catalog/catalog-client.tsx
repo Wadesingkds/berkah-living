@@ -76,19 +76,12 @@ export function CatalogClient({ storeSettings, products }: CatalogClientProps) {
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
               <Image 
-                src="/logo.jpg" 
+                src="/logo-wordmark.png" 
                 alt="LocalHub" 
-                width={40} 
-                height={40}
-                className="rounded-lg"
+                width={200} 
+                height={60}
+                className="h-auto"
               />
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-bold uppercase tracking-wide">LocalHub</span>
-                  <div className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></div>
-                </div>
-                <h1 className="text-xl font-bold leading-tight mt-0.5">{storeSettings.store_name || 'LocalHub'}</h1>
-              </div>
             </div>
             <p className="text-sm opacity-90">{storeSettings.store_description || 'Ayam Organik & Daging Segar'}</p>
           </div>

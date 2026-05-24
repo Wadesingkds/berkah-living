@@ -1,0 +1,34 @@
+<svg viewBox="0 0 480 140" xmlns="http://www.w3.org/2000/svg" width="480" height="140">
+  <!-- White background -->
+  <rect width="480" height="140" fill="white"/>
+  
+  <!-- LocalHub Wordmark - Minimalist Modern SaaS Style -->
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@700&display=swap');
+      .local-text {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        font-weight: 700;
+        font-size: 88px;
+        letter-spacing: -1.2px;
+        fill: #1F2A37;
+      }
+      .hub-text {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        font-weight: 700;
+        font-size: 88px;
+        letter-spacing: -1.2px;
+        fill: #B85C38;
+      }
+    </style>
+  </defs>
+  
+  <!-- "Local" in Dark Navy with geometric precision -->
+  <text x="30" y="105" class="local-text">Local</text>
+  
+  <!-- "Hub" in Terracotta with geometric precision -->
+  <text x="260" y="105" class="hub-text">Hub</text>
+  
+  <!-- Subtle geometric accent line (optional, can be removed) -->
+  <line x1="30" y1="115" x2="420" y2="115" stroke="#D7D9DC" stroke-width="1.5" stroke-linecap="round"/>
+</svg>
