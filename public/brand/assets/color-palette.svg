@@ -1,0 +1,78 @@
+<svg width="800" height="400" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="400" fill="#FFFFFF"/>
+  
+  <!-- Title -->
+  <text x="400" y="40" text-anchor="middle" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        font-size="24" font-weight="700" fill="#2D3748">LocalHub Brand Color Palette</text>
+  
+  <!-- Primary Colors -->
+  <text x="50" y="80" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="600" fill="#718096">PRIMARY COLORS</text>
+  
+  <!-- Terracotta -->
+  <rect x="50" y="95" width="160" height="100" rx="8" fill="#C0633E"/>
+  <text x="130" y="155" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#FFFFFF">Terracotta</text>
+  <text x="130" y="175" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#FFFFFF">#C0633E</text>
+  
+  <!-- Golden Amber -->
+  <rect x="230" y="95" width="160" height="100" rx="8" fill="#D4A041"/>
+  <text x="310" y="155" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#FFFFFF">Golden Amber</text>
+  <text x="310" y="175" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#FFFFFF">#D4A041</text>
+  
+  <!-- Secondary Colors -->
+  <text x="50" y="225" font-family="system-ui, sans-serif" font-size="14" font-weight="600" fill="#718096">SECONDARY COLORS</text>
+  
+  <!-- Forest Green -->
+  <rect x="50" y="240" width="160" height="100" rx="8" fill="#5C7C58"/>
+  <text x="130" y="300" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#FFFFFF">Forest Green</text>
+  <text x="130" y="320" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#FFFFFF">#5C7C58</text>
+  
+  <!-- Warm Cream -->
+  <rect x="230" y="240" width="160" height="100" rx="8" fill="#F4E4BC" stroke="#E2E8F0" stroke-width="1"/>
+  <text x="310" y="300" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#2D3748">Warm Cream</text>
+  <text x="310" y="320" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#718096">#F4E4BC</text>
+  
+  <!-- Neutral Colors -->
+  <text x="450" y="80" font-family="system-ui, sans-serif" font-size="14" font-weight="600" fill="#718096">NEUTRAL COLORS</text>
+  
+  <!-- Dark Charcoal -->
+  <rect x="450" y="95" width="100" height="60" rx="8" fill="#2D3748"/>
+  <text x="500" y="130" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#FFFFFF">Dark Charcoal</text>
+  <text x="500" y="145" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#FFFFFF">#2D3748</text>
+  
+  <!-- Medium Gray -->
+  <rect x="565" y="95" width="100" height="60" rx="8" fill="#718096"/>
+  <text x="615" y="130" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#FFFFFF">Medium Gray</text>
+  <text x="615" y="145" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#FFFFFF">#718096</text>
+  
+  <!-- Light Gray -->
+  <rect x="680" y="95" width="100" height="60" rx="8" fill="#E2E8F0" stroke="#CBD5E0" stroke-width="1"/>
+  <text x="730" y="130" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#2D3748">Light Gray</text>
+  <text x="730" y="145" text-anchor="middle" font-family="system-ui, sans-serif" font-size="9" fill="#718096">#E2E8F0</text>
+  
+  <!-- Gradient Preview -->
+  <text x="450" y="195" font-family="system-ui, sans-serif" font-size="14" font-weight="600" fill="#718096">BRAND GRADIENT</text>
+  <defs>
+    <linearGradient id="brandGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#C0633E"/>
+      <stop offset="100%" style="stop-color:#D4A041"/>
+    </linearGradient>
+  </defs>
+  <rect x="450" y="210" width="330" height="80" rx="8" fill="url(#brandGradient)"/>
+  <text x="615" y="255" text-anchor="middle" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#FFFFFF">Primary → Secondary</text>
+  <text x="615" y="275" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#FFFFFF">#C0633E → #D4A041</text>
+  
+  <!-- Usage Tags -->
+  <text x="450" y="320" font-family="system-ui, sans-serif" font-size="14" font-weight="600" fill="#718096">USAGE</text>
+  <rect x="450" y="335" width="80" height="24" rx="4" fill="#C0633E"/>
+  <text x="490" y="352" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#FFFFFF">CTA / Header</text>
+  
+  <rect x="540" y="335" width="80" height="24" rx="4" fill="#D4A041"/>
+  <text x="580" y="352" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#FFFFFF">Highlight</text>
+  
+  <rect x="630" y="335" width="80" height="24" rx="4" fill="#5C7C58"/>
+  <text x="670" y="352" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#FFFFFF">Success</text>
+  
+  <rect x="720" y="335" width="60" height="24" rx="4" fill="#F4E4BC" stroke="#E2E8F0"/>
+  <text x="750" y="352" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#2D3748">BG</text>
+</svg>

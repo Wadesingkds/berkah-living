@@ -1,0 +1,27 @@
+<svg width="400" height="80" viewBox="0 0 400 80" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradientH" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#C0633E;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#D4A041;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Icon -->
+  <g transform="translate(40, 40)">
+    <circle cx="0" cy="0" r="32" fill="url(#bgGradientH)"/>
+    <g transform="translate(0, -5)">
+      <path d="M0,-16 C-11,-16 -20,-7 -20,0 C-20,7 0,24 0,24 C0,24 20,7 20,0 C20,-7 11,-16 0,-16 Z" 
+            fill="#5C7C58" stroke="#F4E4BC" stroke-width="3"/>
+      <g transform="translate(0, -4)">
+        <path d="M-8,0 L0,-7 L8,0 Z" fill="#F4E4BC"/>
+        <rect x="-6" y="0" width="12" height="10" fill="#F4E4BC"/>
+        <rect x="-2" y="4" width="4" height="6" fill="#C0633E"/>
+        <circle cx="0" cy="2" r="1" fill="#D4A041"/>
+      </g>
+    </g>
+  </g>
+  
+  <!-- Text -->
+  <text x="90" y="48" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        font-size="36" font-weight="700" fill="#2D3748" letter-spacing="-1">LocalHub</text>
+</svg>

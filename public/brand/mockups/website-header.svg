@@ -1,0 +1,117 @@
+<svg width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1920" height="1080" fill="#FFFFFF"/>
+  
+  <!-- Header -->
+  <g transform="translate(960, 60)">
+    <circle cx="0" cy="0" r="40" fill="url(#logoGradient)"/>
+    <g transform="translate(0, -6)">
+      <path d="M0,-20 C-11,-20 -20,-11 -20,0 C-20,11 0,30 0,30 C0,30 20,11 20,0 C20,-11 11,-20 0,-20 Z" 
+            fill="#5C7C58" stroke="#F4E4BC" stroke-width="3"/>
+      <g transform="translate(0, -4)">
+        <path d="M-10,0 L0,-8 L10,0 Z" fill="#F4E4BC"/>
+        <rect x="-8" y="0" width="16" height="12" fill="#F4E4BC"/>
+        <rect x="-2" y="5" width="4" height="6" fill="#C0633E"/>
+        <circle cx="0" cy="2" r="1" fill="#D4A041"/>
+      </g>
+    </g>
+  </g>
+  <text x="960" y="100" text-anchor="middle" font-family="Plus Jakarta Sans, system-ui, sans-serif" 
+        font-size="28" font-weight="700" fill="#2D3748">LocalHub</text>
+  
+  <!-- Navigation -->
+  <g transform="translate(120, 140)">
+    <text x="0" y="0" font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="16" font-weight="500" fill="#2D3748">Beranda</text>
+    <text x="120" y="0" font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="16" font-weight="500" fill="#718096">Kategori</text>
+    <text x="220" y="0" font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="16" font-weight="500" fill="#718096">UMKM</text>
+    <text x="320" y="0" font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="16" font-weight="500" fill="#718096">Tentang</text>
+    <text x="420" y="0" font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="16" font-weight="500" fill="#718096">Blog</text>
+  </g>
+  
+  <!-- CTA Buttons -->
+  <g transform="translate(1600, 140)">
+    <rect x="0" y="0" width="100" height="36" rx="6" fill="#C0633E"/>
+    <text x="50" y="24" text-anchor="middle" font-family="Plus Jakarta Sans, system-ui, sans-serif" 
+          font-size="14" font-weight="600" fill="#FFFFFF">Masuk</text>
+    <rect x="120" y="0" width="140" height="36" rx="6" fill="#5C7C58"/>
+    <text x="190" y="24" text-anchor="middle" font-family="Plus Jakarta Sans, system-ui, sans-serif" 
+          font-size="14" font-weight="600" fill="#FFFFFF">Mulai Berjualan</text>
+  </g>
+  
+  <!-- Hero Section -->
+  <g transform="translate(120, 240)">
+    <text x="0" y="0" font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="64" font-weight="700" fill="#2D3748">
+      Belanja Lokal,<tspan dy="76" font-size="64" font-weight="700" fill="#C0633E">Mudah Digital</tspan>
+    </text>
+    <text x="0" y="200" font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="24" fill="#718096" width="600">
+      Temukan produk terbaik dari UMKM sekitarmu. Dukung ekonomi lokal dengan berbelanja secara digital yang aman dan terpercaya.
+    </text>
+    
+    <g transform="translate(0, 280)">
+      <rect x="0" y="0" width="200" height="56" rx="8" fill="#C0633E"/>
+      <text x="100" y="36" text-anchor="middle" font-family="Plus Jakarta Sans, system-ui, sans-serif" 
+            font-size="20" font-weight="600" fill="#FFFFFF">Jelajahi Produk</text>
+      
+      <rect x="240" y="0" width="200" height="56" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="2"/>
+      <text x="340" y="36" text-anchor="middle" font-family="Plus Jakarta Sans, system-ui, sans-serif" 
+            font-size="20" font-weight="600" fill="#2D3748">Mulai Berjualan</text>
+    </g>
+  </g>
+  
+  <!-- Hero Visual -->
+  <g transform="translate(900, 200)">
+    <rect x="0" y="0" width="800" height="400" rx="24" fill="#F4E4BC" opacity="0.3"/>
+    <circle cx="150" cy="150" r="100" fill="#C0633E" opacity="0.1"/>
+    <circle cx="350" cy="200" r="120" fill="#D4A041" opacity="0.1"/>
+    <circle cx="550" cy="150" r="90" fill="#5C7C58" opacity="0.1"/>
+    <circle cx="700" cy="250" r="110" fill="#C0633E" opacity="0.1"/>
+  </g>
+  
+  <!-- Features Section -->
+  <g transform="translate(120, 700)">
+    <text x="0" y="0" font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="40" font-weight="700" fill="#2D3748">
+      Mengapa Pilih LocalHub?
+    </text>
+    
+    <!-- Feature 1 -->
+    <g transform="translate(0, 80)">
+      <rect x="0" y="0" width="300" height="200" rx="16" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="2"/>
+      <circle cx="50" cy="50" r="30" fill="#C0633E" opacity="0.1"/>
+      <text x="50" y="55" text-anchor="middle" font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="24" fill="#C0633E">❤️</text>
+      <text x="100" y="50" font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="20" font-weight="600" fill="#2D3748">Dukung UMKM</text>
+      <text x="100" y="80" font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="14" fill="#718096">Setiap pembelian mendukung usaha lokal Indonesia</text>
+    </g>
+    
+    <!-- Feature 2 -->
+    <g transform="translate(340, 80)">
+      <rect x="0" y="0" width="300" height="200" rx="16" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="2"/>
+      <circle cx="50" cy="50" r="30" fill="#D4A041" opacity="0.1"/>
+      <text x="50" y="55" text-anchor="middle" font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="24" fill="#D4A041">🔒</text>
+      <text x="100" y="50" font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="20" font-weight="600" fill="#2D3748">Aman & Terpercaya</text>
+      <text x="100" y="80" font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="14" fill="#718096">Transaksi terlindungi dan pembayaran aman</text>
+    </g>
+    
+    <!-- Feature 3 -->
+    <g transform="translate(680, 80)">
+      <rect x="0" y="0" width="300" height="200" rx="16" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="2"/>
+      <circle cx="50" cy="50" r="30" fill="#5C7C58" opacity="0.1"/>
+      <text x="50" y="55" text-anchor="middle" font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="24" fill="#5C7C58">📍</text>
+      <text x="100" y="50" font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="20" font-weight="600" fill="#2D3748">Lokal & Cepat</text>
+      <text x="100" y="80" font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="14" fill="#718096">Produk dari toko terdekat, pengiriman cepat</text>
+    </g>
+  </g>
+  
+  <!-- Footer -->
+  <g transform="translate(120, 1000)">
+    <text x="0" y="0" font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="24" font-weight="700" fill="#2D3748">LocalHub</text>
+    <text x="0" y="30" font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="14" fill="#718096">© 2026 LocalHub - Support UMKM Sekitar</text>
+  </g>
+  
+  <!-- Logo Gradient Definition -->
+  <defs>
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#C0633E"/>
+      <stop offset="100%" style="stop-color:#D4A041"/>
+    </linearGradient>
+  </defs>
+</svg>

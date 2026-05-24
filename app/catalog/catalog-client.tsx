@@ -76,7 +76,7 @@ export function CatalogClient({ storeSettings, products }: CatalogClientProps) {
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
               <Image 
-                src="/logo-icon.png" 
+                src="/logo.jpg" 
                 alt="LocalHub" 
                 width={40} 
                 height={40}

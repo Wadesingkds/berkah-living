@@ -1,0 +1,49 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <!-- iOS App Icon - 1024x1024 with superellipse shape -->
+  <defs>
+    <linearGradient id="appIconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#C0633E"/>
+      <stop offset="100%" style="stop-color:#D4A041"/>
+    </linearGradient>
+    <clipPath id="superellipse">
+      <path d="M150,0 L874,0 C940,0 990,50 990,120 L990,904 C990,974 940,1024 874,1024 L150,1024 C84,1024 34,974 34,904 L34,120 C34,50 84,0 150,0 Z"/>
+    </clipPath>
+  </defs>
+  
+  <!-- Background with gradient -->
+  <rect width="1024" height="1024" fill="url(#appIconGradient)"/>
+  
+  <!-- Main Icon Group -->
+  <g transform="translate(512, 512)">
+    <!-- Location Pin with House -->
+    <g transform="translate(0, -40)">
+      <!-- Pin shape -->
+      <path d="M0,-200 C-110,-200 -200,-110 -200,0 C-200,110 0,300 0,300 C0,300 200,110 200,0 C200,-110 110,-200 0,-200 Z" 
+            fill="#5C7C58" stroke="#F4E4BC" stroke-width="12"/>
+      
+      <!-- House inside pin -->
+      <g transform="translate(0, -50)">
+        <!-- Roof -->
+        <path d="M-80,0 L0,-65 L80,0 Z" fill="#F4E4BC"/>
+        <!-- Body -->
+        <rect x="-65" y="0" width="130" height="100" fill="#F4E4BC"/>
+        <!-- Door -->
+        <rect x="-25" y="40" width="50" height="60" fill="#C0633E"/>
+        <!-- Window -->
+        <circle cx="0" cy="20" r="12" fill="#D4A041"/>
+        <!-- Window frame -->
+        <line x1="0" y1="14" x2="0" y2="26" stroke="#F4E4BC" stroke-width="4"/>
+        <line x1="-6" y1="20" x2="6" y2="20" stroke="#F4E4BC" stroke-width="4"/>
+      </g>
+    </g>
+  </g>
+  
+  <!-- Decorative elements -->
+  <circle cx="150" cy="150" r="80" fill="#FFFFFF" opacity="0.1"/>
+  <circle cx="874" cy="874" r="100" fill="#FFFFFF" opacity="0.1"/>
+  
+  <!-- Text "LH" for small sizes -->
+  <g transform="translate(512, 512)" opacity="0.9">
+    <text x="0" y="15" text-anchor="middle" font-family="system-ui, sans-serif" font-size="280" font-weight="700" fill="#FFFFFF">LH</text>
+  </g>
+</svg>

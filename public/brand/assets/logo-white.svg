@@ -1,0 +1,29 @@
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <!-- White version for dark backgrounds -->
+  
+  <!-- Main circle background -->
+  <circle cx="128" cy="128" r="120" fill="white" fill-opacity="0.15"/>
+  
+  <!-- Location pin with house -->
+  <g transform="translate(128, 90)">
+    <!-- Pin shape -->
+    <path d="M0,-40 C-22,-40 -40,-22 -40,0 C-40,22 0,60 0,60 C0,60 40,22 40,0 C40,-22 22,-40 0,-40 Z" 
+          fill="white" fill-opacity="0.9" stroke="white" stroke-width="4"/>
+    
+    <!-- House inside pin -->
+    <g transform="translate(0, -10)">
+      <!-- Roof -->
+      <path d="M-15,0 L0,-12 L15,0 Z" fill="#C0633E"/>
+      <!-- Body -->
+      <rect x="-12" y="0" width="24" height="20" fill="#C0633E"/>
+      <!-- Door -->
+      <rect x="-4" y="8" width="8" height="12" fill="white"/>
+      <!-- Window -->
+      <circle cx="0" cy="4" r="2" fill="#D4A041"/>
+    </g>
+  </g>
+  
+  <!-- Text -->
+  <text x="128" y="200" text-anchor="middle" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        font-size="32" font-weight="700" fill="white" letter-spacing="-1">LocalHub</text>
+</svg>
