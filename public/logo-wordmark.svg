@@ -1,34 +1,37 @@
-<svg viewBox="0 0 480 140" xmlns="http://www.w3.org/2000/svg" width="480" height="140">
+<svg viewBox="0 0 500 160" xmlns="http://www.w3.org/2000/svg" width="500" height="160">
   <!-- White background -->
-  <rect width="480" height="140" fill="white"/>
+  <rect width="500" height="160" fill="white"/>
   
-  <!-- LocalHub Wordmark - Minimalist Modern SaaS Style -->
+  <!-- Define custom font styling -->
   <defs>
     <style>
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@700&display=swap');
-      .local-text {
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@600;700;800&display=swap');
+      
+      .wordmark-text {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         font-weight: 700;
-        font-size: 88px;
-        letter-spacing: -1.2px;
+        font-size: 96px;
+        letter-spacing: -2px;
+        font-feature-settings: "ss01" 1;
+      }
+      
+      .local-word {
         fill: #1F2A37;
       }
-      .hub-text {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        font-weight: 700;
-        font-size: 88px;
-        letter-spacing: -1.2px;
+      
+      .hub-word {
         fill: #B85C38;
       }
     </style>
   </defs>
   
-  <!-- "Local" in Dark Navy with geometric precision -->
-  <text x="30" y="105" class="local-text">Local</text>
+  <!-- "Local" - Dark Navy with geometric precision -->
+  <text x="28" y="115" class="wordmark-text local-word">Local</text>
   
-  <!-- "Hub" in Terracotta with geometric precision -->
-  <text x="260" y="105" class="hub-text">Hub</text>
+  <!-- "Hub" - Terracotta with geometric precision -->
+  <!-- Positioned with balanced spacing -->
+  <text x="268" y="115" class="wordmark-text hub-word">Hub</text>
   
-  <!-- Subtle geometric accent line (optional, can be removed) -->
-  <line x1="30" y1="115" x2="420" y2="115" stroke="#D7D9DC" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Subtle baseline indicator (optional, for alignment reference) -->
+  <line x1="28" y1="125" x2="420" y2="125" stroke="#E5E7EB" stroke-width="0.5" opacity="0.5"/>
 </svg>
