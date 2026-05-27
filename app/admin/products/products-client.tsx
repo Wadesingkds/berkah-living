@@ -14,8 +14,9 @@ interface Product {
   id: string
   name: string
   price: number
-  category_id: string
-  images: string[]
+  category_id: string | null
+  image_url: string | null
+  images?: string[]
   is_active: boolean
   created_at: string
 }
@@ -111,14 +112,17 @@ export function ProductsClient({ initialProducts = [], categories = [] }: Produc
                   <td className="px-6 py-4 text-sm">{category?.name || '-'}</td>
                   <td className="px-6 py-4 text-sm">Rp {product.price.toLocaleString('id-ID')}</td>
                   <td className="px-6 py-4 text-sm">
-                    {product.images.length > 0 ? (
-                      <div className="flex gap-1">
-                        {product.images.slice(0, 3).map((img, i) => (
-                          <img key={i} src={img} alt="product" className="w-8 h-8 rounded object-cover" />
-                        ))}
-                        {product.images.length > 3 && <span className="text-xs text-gray-500">+{product.images.length - 3}</span>}
-                      </div>
-                    ) : '-'}
+                    {(() => {
+                      const imgs = product.images || (product.image_url ? [product.image_url] : [])
+                      return imgs.length > 0 ? (
+                        <div className="flex gap-1">
+                          {imgs.slice(0, 3).map((img, i) => (
+                            <img key={i} src={img} alt="product" className="w-8 h-8 rounded object-cover" />
+                          ))}
+                          {imgs.length > 3 && <span className="text-xs text-gray-500">+{imgs.length - 3}</span>}
+                        </div>
+                      ) : '-'
+                    })()}
                   </td>
                   <td className="px-6 py-4 text-sm">
                     <span className={`px-2 py-1 rounded text-xs font-medium ${product.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>

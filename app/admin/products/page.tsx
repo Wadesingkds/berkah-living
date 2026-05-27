@@ -14,8 +14,9 @@ interface Product {
   id: string
   name: string
   price: number
-  category_id: string
-  images: string[]
+  category_id: string | null
+  image_url: string | null
+  images?: string[]
   is_active: boolean
   created_at: string
 }
